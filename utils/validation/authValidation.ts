@@ -11,7 +11,7 @@ export const regesterValidation = [
   check("password")
     .exists()
     .withMessage("Password is required")
-  .isLength({ min: 8, max: 20 })
+    .isLength({ min: 8, max: 20 })
     .withMessage("Password must be between 8 and 20 characters"),
   validatorMiddleware,
 ];

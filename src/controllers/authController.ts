@@ -25,6 +25,7 @@ const regester = asyncHandler(async (req: Request, res: Response) => {
 
     await Wallet.create({ userId: newUser._id });
 
+    
     res.json({ message: "User signed in successfully" });
   } catch (error) {
     res.status(500).json({ error: error });
