@@ -1,3 +1,4 @@
+import { ApiError } from './../utils/APIError';
 import express from "express";
 import swaggerUi from "swagger-ui-express";
 import swaggerDocs from "../swagger.json";
@@ -9,6 +10,8 @@ import { print } from "graphql";
 import connectDB from "./config/connectDB"
 import authRoute from "./routes/authRoute";
 import userRoute from "./routes/users";
+import walletsRoute from "./routes/walletsRoute";
+import { globalErrorMiddleware } from './middlewares/ErrorMiddleware';
 dotenv.config();
 
 
@@ -44,7 +47,26 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use("/api/v1/auth", authRoute)
 app.use("/api/v1/users", userRoute)
+app.use("/api/v1/wallets", walletsRoute)
 
-app.listen(PORT, () => {
-  console.log(`Server running on port http://localhost:${PORT}`);
+// Error Api
+app.use("*", (req, res, next) => {
+  next(new ApiError(`Can't find ${req.originalUrl} on this server`, 404));
+});
+
+// global error handling midleware
+app.use(globalErrorMiddleware);
+
+// run listen
+const server = app.listen(5000, () => {
+  console.log("listening on port 3000");
+});
+
+// Handle rejection outside express
+process.on("unhandledRejection", (err: any) => {
+  console.log(`unhandledRejection Errors: ${err.name} | ${err.message}`);
+  server.close(() => {
+    console.log("Shutting down...");
+    process.exit(1);
+  });
 });

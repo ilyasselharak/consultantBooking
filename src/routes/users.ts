@@ -1,12 +1,11 @@
 import express from "express";
+import { getUsers } from "../controllers/usersController";
 
 
 const router = express.Router();
 
 
-router.get("/", (req, res) => {
-    res.json({ message: 'Welcome to the expert consultation platform API!' });
-})
+router.get("/", getUsers)
 
 
 export default router

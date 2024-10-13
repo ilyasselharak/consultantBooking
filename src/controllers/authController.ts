@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import User from "../models/UserModel";
 import bcrypt from "bcryptjs";
+import Wallet from "../models/WalletModel";
 
 const regester = asyncHandler(async (req: Request, res: Response) => {
   try {
@@ -21,6 +22,9 @@ const regester = asyncHandler(async (req: Request, res: Response) => {
     });
 
     await newUser.save();
+
+    await Wallet.create({ userId: newUser._id });
+
     res.json({ message: "User signed in successfully" });
   } catch (error) {
     res.status(500).json({ error: error });

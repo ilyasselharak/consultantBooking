@@ -1,4 +1,5 @@
 import express from "express";
+import { regesterValidation } from './../../utils/validation/authValidation';
 import {
   forgotPassword,
   resetPassword,
@@ -11,7 +12,7 @@ const router = express.Router();
 
 router.post("/signup", signup);
 
-router.post("/regester", regester);
+router.post("/regester", regesterValidation, regester);
 
 router.post("/verify", verifyUser);
 
