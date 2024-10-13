@@ -1,0 +1,70 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "API documentation for Expert Consultation Platform",
+    "version": "1.0.0",
+    "title": "Expert Consultation API"
+  },
+  "paths": {
+    "/users": {
+      "post": {
+        "summary": "Register a user",
+        "description": "Create a new user account",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "body",
+            "description": "User's full name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "in": "body",
+            "description": "User's email",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "password",
+            "in": "body",
+            "description": "User's password",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "businessName",
+            "in": "body",
+            "description": "User's business name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+          ,{
+            "name": "professionalId",
+            "in": "body",
+            "description": "User's professional id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+
+          }
+
+        ],
+        "responses": {
+          "200": {
+            "description": "User created successfully"
+          }
+        }
+      }
+    }
+  }
+}
