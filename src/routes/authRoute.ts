@@ -3,21 +3,21 @@ import { regesterValidation } from './../../utils/validation/authValidation';
 import {
   forgotPassword,
   resetPassword,
-  regester,
-  signup,
+  register,
+  login,
   verifyUser,
 } from "../controllers/authController";
 
 const router = express.Router();
 
-router.post("/signup", signup);
+router.post("/login", login);
 
-router.post("/regester", regesterValidation, regester);
+router.post("/register" , register);
 
-router.post("/verify", verifyUser);
+router.post("/verify/:id", verifyUser);
 
 router.post("/forgot-password", forgotPassword);
 
-router.post("/reset-password", resetPassword);
+router.post("/reset-password/:id/:token", resetPassword);
 
 export default router;

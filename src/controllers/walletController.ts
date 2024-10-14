@@ -9,11 +9,11 @@ const getWallets = asyncHandler(async (req: Request, res: Response): Promise<voi
     console.log("Fetching wallets...");
     const walletsRedis = JSON.parse((await redisClient.get("wallets")) || "[]");
 
-    if (walletsRedis.length > 0) {
-      console.log("Wallets from Redis:", walletsRedis);
-      res.status(200).json(walletsRedis);
-      return;
-    }
+    // if (walletsRedis.length > 0) {
+    //   console.log("Wallets from Redis:", walletsRedis);
+    //   res.status(200).json(walletsRedis);
+    //   return;
+    // }
     const wallets = await Wallet.find({});
     console.log("Wallets fetched:", wallets);
     redisClient.set("wallets", JSON.stringify(wallets));
