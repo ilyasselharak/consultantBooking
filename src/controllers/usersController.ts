@@ -2,6 +2,18 @@ import asyncHandler from "express-async-handler";
 import User from "../models/UserModel";
 import Wallet from "../models/WalletModel";
 
+
+
+
+
+const createUser = asyncHandler(async (req, res) => {
+  try {
+    const user = await User.create(req.body);
+    res.status(201).json(user);
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+})
 const getUsers = asyncHandler(async (req, res) => {
   try {
     const users = await User.find();
@@ -52,4 +64,4 @@ const deleteUser = asyncHandler(async (req, res) => {
   }
 });
 
-export { getUsers, getUserById, updateUser, deleteUser };
+export { createUser, getUsers, getUserById, updateUser, deleteUser };

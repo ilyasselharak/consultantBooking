@@ -1,9 +1,9 @@
 import express from "express";
-import { deleteUser, getUserById, getUsers, updateUser } from "../controllers/usersController";
+import { createUser, deleteUser, getUserById, getUsers, updateUser } from "../controllers/usersController";
 
 const router = express.Router();
 
-router
+router.post("/", createUser)
   .get("/", getUsers)
   .get("/:id", getUserById)
   .put("/:id", updateUser)
