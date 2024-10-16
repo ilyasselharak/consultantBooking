@@ -1,15 +1,17 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 
 const walletSchema = new mongoose.Schema({
-    userId: {
-        type: String,
+    consultantId: {
+        type: Schema.Types.ObjectId,
+        ref: "Consultant",
         required: true
     },
     balance: {
         type: Number,
         default: 0
     },
+    
 }, {
     timestamps: true
 });

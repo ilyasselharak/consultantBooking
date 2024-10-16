@@ -14,6 +14,30 @@
     {
       "name": "Users",
       "description": "User management routes"
+    },
+    {
+      "name": "Consultants",
+      "description": "Consultation management routes"
+    },
+    {
+      "name": "Availability",
+      "description": "Availability management routes"
+    },
+    {
+      "name": "Tickets",
+      "description": "Ticket management routes"
+    },
+    {
+      "name": "Transactions",
+      "description": "Transaction management routes"
+    },
+    {
+      "name": "Wallets",
+      "description": "Wallet management routes"
+    },
+    {
+      "name": "Bookings",
+      "description": "Booking management routes"
     }
   ],
   "paths": {
@@ -231,7 +255,6 @@
         }
       }
     },
-
     "/api/v1/users": {
       "post": {
         "tags": ["Users"],
@@ -262,7 +285,7 @@
               },
               "required": ["fullName", "email", "password"]
             }
-          } 
+          }
         ],
         "responses": {
           "200": {
@@ -290,7 +313,6 @@
         }
       }
     },
-
     "/api/v1/users/{id}": {
       "get": {
         "tags": ["Users"],
@@ -377,6 +399,1187 @@
         "responses": {
           "200": {
             "description": "User deleted successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/transactions": {
+      "get": {
+        "tags": ["Transactions"],
+        "summary": "Get all transactions",
+        "description": "Get all transactions",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array"
+            }
+          }
+        }
+      },
+
+      "post": {
+        "tags": ["Transactions"],
+        "summary": "Create transaction",
+        "description": "Create transaction",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "type": "string",
+                  "description": "The ID of the user"
+                },
+                "amount": {
+                  "type": "number",
+                  "description": "The amount of the transaction"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": ["debit", "credit"],
+                  "description": "The type of the transaction"
+                }
+              },
+              "required": ["userId", "amount", "type"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction created successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid user ID"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+
+      "delete": {
+        "tags": ["Transactions"],
+        "summary": "Delete many transaction",
+        "description": "Delete many transaction",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "The IDs of the transactions to delete"
+                }
+              },
+              "required": ["ids"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transactions deleted successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid user ID"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/transactions/{id}": {
+      "get": {
+        "tags": ["Transactions"],
+        "summary": "Get transaction by ID",
+        "description": "Get transaction by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the transaction"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+
+      "put": {
+        "tags": ["Transactions"],
+        "summary": "Update transaction",
+        "description": "Update transaction",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the transaction"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "type": "string",
+                  "description": "The ID of the user"
+                },
+                "amount": {
+                  "type": "number",
+                  "description": "The amount of the transaction"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": ["debit", "credit"],
+                  "description": "The type of the transaction"
+                }
+              },
+              "required": ["amount", "type"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction updated successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid transaction ID"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+
+      "delete": {
+        "tags": ["Transactions"],
+        "summary": "Delete transaction",
+        "description": "Delete transaction",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the transaction"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction deleted successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/wallts": {
+      "get": {
+        "tags": ["Wallets"],
+        "summary": "Get all wallets",
+        "description": "Get all wallets",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Wallets"],
+        "summary": "Create wallet",
+        "description": "Create wallet",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "consultantId": {
+                  "type": "string",
+                  "description": "The ID of the consultant",
+                  "required": true
+                },
+                "balance": {
+                  "type": "number",
+                  "description": "The balance of the wallet",
+                  "default": 0
+                }
+              },
+              "required": ["userId", "balance"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Wallet created successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid user ID"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+
+      "delete": {
+        "tags": ["Wallets"],
+        "summary": "Delete many wallet",
+        "description": "Delete many wallet",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "The IDs of the wallets to delete"
+                }
+              },
+              "required": ["ids"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Wallets deleted successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid wallet ID"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/wallets/{id}": {
+      "get": {
+        "tags": ["Wallets"],
+        "summary": "Get wallet by ID",
+        "description": "Get wallet by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the wallet"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+
+      "put": {
+        "tags": ["Wallets"],
+        "summary": "Update wallet",
+        "description": "Update wallet",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the wallet"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "balance": {
+                  "type": "number",
+                  "description": "The balance of the wallet"
+                }
+              },
+              "required": ["balance"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Wallet updated successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid wallet ID"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+
+      "delete": {
+        "tags": ["Wallets"],
+        "summary": "Delete wallet",
+        "description": "Delete wallet",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the wallet"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Wallet deleted successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid wallet ID"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/tickets": {
+      "get": {
+        "tags": ["Tickets"],
+        "summary": "Get all tickets",
+        "description": "Get all tickets",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array"
+            }
+          }
+        }
+      },
+
+      "post": {
+        "tags": ["Tickets"],
+        "summary": "Create ticket",
+        "description": "Create ticket",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "type": "string",
+                  "description": "The ID of the user"
+                },
+                "relationId": {
+                  "type": "string",
+                  "description": "The ID of the relation"
+                },
+                "relationType": {
+                  "type": "string",
+                  "description": "The type of the relation",
+                  "enum": [
+                    "Consultant",
+                    "User",
+                    "Transaction",
+                    "Wallet",
+                    "DailyBooking",
+                    "Availability",
+                    "Appointment"
+                  ]
+                },
+                "type": {
+                  "type": "string",
+                  "description": "The type of the ticket",
+                  "enum": ["information", "warning", "error"]
+                }
+              },
+              "required": ["userId", "relationId", "relationType", "type"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ticket created successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid ticket"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+
+      "delete": {
+        "tags": ["Tickets"],
+        "summary": "Delete many ticket",
+        "description": "Delete many ticket",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "The IDs of the tickets"
+                }
+              },
+              "required": ["ids"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tickets deleted successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid ticket ID"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/tickets/{id}": {
+      "get": {
+        "tags": ["Tickets"],
+        "summary": "Get ticket",
+        "description": "Get ticket",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the ticket"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Tickets"],
+        "summary": "Update ticket",
+        "description": "Update ticket",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the ticket"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "The type of the ticket",
+                  "enum": ["information", "warning", "error"]
+                }
+              },
+              "required": ["type"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ticket updated successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid ticket ID"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/consultants": {
+      "get": {
+        "tags": ["Consultants"],
+        "summary": "Get all consultants",
+        "description": "Get all consultancy",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Consultants"],
+        "summary": "Create consultancy",
+        "description": "Create consultancy",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "type": "string",
+                  "description": "The ID of the user"
+                },
+                "expertise": {
+                  "type": "string",
+                  "description": "The expertise of the consultant"
+                },
+                "ratingAverage": {
+                  "type": "number",
+                  "description": "The rating average of the consultancy"
+                },
+                "ratingCount": {
+                  "type": "number",
+                  "description": "The rating count of the consultancy"
+                },
+                "ICE": {
+                  "type": "string",
+                  "description": "The ICE of the consultancy"
+                },
+                "professionalId": {
+                  "type": "string",
+                  "description": "The professional ID of the consultancy"
+                },
+                "taxId": {
+                  "type": "string",
+                  "description": "The tax ID of the consultancy"
+                },
+                "CIN": {
+                  "type": "string",
+                  "description": "The CIN of the consultancy"
+                },
+                "businessName": {
+                  "type": "string",
+                  "description": "The business name of the consultancy"
+                }
+              },
+              "required": [
+                "userId",
+                "expertise",
+                "ratingAverage",
+                "ratingCount",
+                "ICE",
+                "professionalId",
+                "taxId",
+                "CIN",
+                "businessName",
+                "tickets"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Consultant created successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Consultants"],
+        "summary": "Delete many consultancy",
+        "description": "Delete many consultancy",
+        "responses": {
+          "200": {
+            "description": "Consultancies deleted successfully"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/consultants/{id}": {
+      "get": {
+        "tags": ["Consultants"],
+        "summary": "Get one consultancy",
+        "description": "Get one consultancy",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the consultancy"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Consultants"],
+        "summary": "Update consultancy",
+        "description": "Update consultancy",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the consultancy"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "expertise": {
+                  "type": "string",
+                  "description": "The expertise of the consultancy"
+                },
+                "ratingAverage": {
+                  "type": "number",
+                  "description": "The rating average of the consultancy"
+                },
+                "ratingCount": {
+                  "type": "number",
+                  "description": "The rating count of the consultancy"
+                },
+                "ICE": {
+                  "type": "string",
+                  "description": "The ICE of the consultancy"
+                },
+                "professionalId": {
+                  "type": "string",
+                  "description": "The professional ID of the consultancy"
+                },
+                "taxId": {
+                  "type": "string",
+                  "description": "The tax ID of the consultancy"
+                },
+                "CIN": {
+                  "type": "string",
+                  "description": "The CIN of the consultancy"
+                },
+                "businessName": {
+                  "type": "string",
+                  "description": "The business name of the consultancy"
+                },
+                "isTroubled": {
+                  "type": "boolean",
+                  "description": "The isTroubled of the consultancy"
+                },
+                "tickets": {
+                  "type": "array",
+                  "description": "The tickets of the consultancy"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Consultant updated successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid consultancy ID"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Consultants"],
+        "summary": "Delete one consultancy",
+        "description": "Delete one consultancy",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the consultancy"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Consultant deleted successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid consultancy ID"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/availability": {
+      "get": {
+        "tags": ["Availability"],
+        "summary": "Get availability",
+        "description": "Get availability",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Availability"],
+        "summary": "Create availability",
+        "description": "Create availability",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "consultantId": {
+                  "type": "string",
+                  "description": "The ID of the consultant",
+                  "required": true
+                },
+                "availabilityTimes": {
+                  "type": "array",
+                  "description": "The availability times of the consultant",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "date": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "The date of the availability",
+                        "required": true
+                      },
+                      "times": {
+                        "type": "array",
+                        "description": "The times of the availability",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "startTime": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "The start time of the availability",
+                              "required": true
+                            },
+                            "endTime": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "The end time of the availability",
+                              "required": true
+                            }
+                          },
+                          "required": ["startTime", "endTime"]
+                        }
+                      }
+                    },
+                    "required": ["date", "times"]
+                  }
+                }
+              },
+              "required": ["consultantId", "availabilityTimes"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Availability created successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid availability"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/availability/{id}": {
+      "get": {
+        "tags": ["Availability"],
+        "summary": "Get availability",
+        "description": "Get availability",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the availability"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Availability"],
+        "summary": "Update availability",
+        "description": "Update availability",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the availability"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "consultantId": {
+                  "type": "string",
+                  "description": "The ID of the consultant",
+                  "required": true
+                },
+                "availabilityTimes": {
+                  "type": "array",
+                  "description": "The availability times of the consultant",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "date": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "The date of the availability",
+                        "required": true
+                      },
+                      "times": {
+                        "type": "array",
+                        "description": "The times of the availability",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "startTime": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "The start time of the availability",
+                              "required": true
+                            },
+                            "endTime": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "The end time of the availability",
+                              "required": true
+                            }
+                          },
+                          "required": ["startTime", "endTime"]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Availability updated successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid availability"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Availability"],
+        "summary": "Delete availability",
+        "description": "Delete availability",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the availability"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Availability deleted successfully"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/bookings": {
+      "get": {
+        "tags": ["Bookings"],
+        "summary": "Get booking",
+        "description": "Get booking",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Bookings"],
+        "summary": "Create booking",
+        "description": "Create booking",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "type": "string",
+                  "description": "The ID of the user",
+                  "required": true
+                },
+                "consultantId": {
+                  "type": "string",
+                  "description": "The ID of the consultant",
+                  "required": true
+                },
+                "bookingTime": {
+                  "type": "object",
+                  "properties": {
+                    "date": {
+                      "type": "string",
+                      "format": "date",
+                      "description": "The date of the booking",
+                      "required": true
+                    },
+                    "startTime": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "The start time of the booking",
+                      "required": true
+                    },
+                    "endTime": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "The end time of the booking",
+                      "required": true
+                    }
+                  },
+                  "required": ["date", "startTime", "endTime"]
+                }
+              },
+              "required": ["userId", "consultantId", "bookingTime"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Booking created successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid booking"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Bookings"],
+        "summary": "Delete many booking",
+        "description": "Delete many booking",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "description": "The ID of the booking"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Booking deleted successfully"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/bookings/{id}": {
+      "get": {
+        "tags": ["Bookings"],
+        "summary": "Get booking",
+        "description": "Get booking",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the booking"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Bookings"],
+        "summary": "Update booking",
+        "description": "Update booking",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the booking"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "bookingTime": {
+                  "type": "object",
+                  "properties": {
+                    "date": {
+                      "type": "string",
+                      "format": "date",
+                      "description": "The date of the booking"
+                    },
+                    "startTime": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "The start time of the booking"
+                    },
+                    "endTime": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "The end time of the booking"
+                    }
+                  }
+                },
+                "status": {
+                  "type": "string",
+                  "description": "The status of the booking",
+                  "enum": ["pending", "confirmed", "cancelled"]
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Booking updated successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid booking"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Bookings"],
+        "summary": "Cancel booking",
+        "description": "Cancel booking",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the booking"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Booking canceled successfully"
+          },
+          "404": {
+            "description": "Bad Request: Invalid booking"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       }

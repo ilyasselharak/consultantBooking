@@ -6,6 +6,9 @@ import crypto from "crypto";
 import Wallet from "../models/WalletModel";
 import { sendEmail } from "./../../utils/sendEmail";
 
+// @desc    Register user
+// @route   POST /api/v1/auth/register
+// @access  Public
 const register = asyncHandler(async (req: Request, res: Response) => {
   console.log(req.body);
   try {
@@ -65,8 +68,6 @@ const register = asyncHandler(async (req: Request, res: Response) => {
         <body>
         <h2>Hello,</h2>
         <p>Thank you for registering with our website. Your verification code is ${token}</p>
-        <p>Please click on the following link to verify your email:</p>
-        <a href="${link}">verify</a>
         </body>
         </html>
         `;
@@ -76,12 +77,15 @@ const register = asyncHandler(async (req: Request, res: Response) => {
 
     await Wallet.create({ userId: newUser._id });
 
-    res.json({ message: "User signed in successfully" });
+    res.status(201).json({ message: "User signed in successfully" });
   } catch (error) {
     res.status(500).json({ error: error });
   }
 });
 
+// @desc    Login user
+// @route   POST /api/v1/auth/login
+// @access  Public
 const login = asyncHandler(async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
@@ -110,6 +114,9 @@ const login = asyncHandler(async (req: Request, res: Response) => {
   }
 });
 
+// @desc    Verify user
+// @route   POST /api/v1/auth/verify
+// @access  Public
 const verifyUser = asyncHandler(async (req: Request, res: Response) => {
   try {
     const { token } = req.body;
@@ -131,9 +138,9 @@ const verifyUser = asyncHandler(async (req: Request, res: Response) => {
 
     if (
       !corecteToken ||
-      user.expireDate !== null &&
-      user.expireDate.getMinutes() <
-        new Date(Date.now() - 1 * 60 * 1000).getMinutes()
+      (user.expireDate !== null &&
+        user.expireDate.getMinutes() <
+          new Date(Date.now() - 1 * 60 * 1000).getMinutes())
     ) {
       // message verify send again
       const token = Math.floor(100000 + Math.random() * 900000);
@@ -178,15 +185,14 @@ const verifyUser = asyncHandler(async (req: Request, res: Response) => {
         <body>
         <h2>Hello,</h2>
         <p>Thank you for registering with our website. Your verification code is ${token}</p>
-        <p>Please click on the following link to verify your email:</p>
-        <a href="${link}">verify</a>
+        
         </body>
         </html>
         `;
 
       sendEmail(verifyEmailHtml, "verify your email", user.email);
       await user.save();
-      res.status(400).json({ message: "Token expired" });
+      res.status(400).json({ message: "Token expired", link });
       return;
     }
     user.verified = true;
@@ -200,6 +206,9 @@ const verifyUser = asyncHandler(async (req: Request, res: Response) => {
   }
 });
 
+// @desc    Forgot password
+// @route   POST /api/v1/auth/forgot-password
+// @access  Public
 const forgotPassword = asyncHandler(async (req: Request, res: Response) => {
   try {
     console.log(req.body);
@@ -266,6 +275,9 @@ const forgotPassword = asyncHandler(async (req: Request, res: Response) => {
   }
 });
 
+// @desc    Reset password
+// @route   POST /api/v1/auth/reset-password/:id/:token
+// @access  Public
 const resetPassword = asyncHandler(async (req: Request, res: Response) => {
   const { id, token } = req.params;
   const { password } = req.body;

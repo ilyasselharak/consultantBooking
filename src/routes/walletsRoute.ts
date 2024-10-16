@@ -1,17 +1,15 @@
 import express from "express";
 import {
-    deleteWallet,
+  createWallet,
+  deleteManyWallets,
+  deleteWallet,
   getWalletById,
   getWallets,
   updateWallet,
 } from "../controllers/walletController";
 const router = express.Router();
 
-router
-  .get("/", getWallets)
-  .get("/:id", getWalletById)
-  .put("/:id", updateWallet)
-  .delete("/:id", deleteWallet);
+router.route("/").get(getWallets).post(createWallet).delete(deleteManyWallets);
+router.route("/:id").get(getWalletById).put(updateWallet).delete(deleteWallet);
 
-
-  export default router
+export default router;

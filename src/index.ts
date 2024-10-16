@@ -9,8 +9,13 @@ import { resolvers, typeDefs } from "./graphql";
 import { print } from "graphql";
 import connectDB from "./config/connectDB";
 import authRoute from "./routes/authRoute";
-import userRoute from "./routes/usersRoute";
+import usersRoute from "./routes/usersRoute";
+import TransactionsRoute from "./routes/transactionsRoute";
+import availabilitysRoute from "./routes/availabilityRoute";
+import ticketsRoute from "./routes/ticketsRoute";
+import consultantsRoute from "./routes/consultantsRoute";
 import walletsRoute from "./routes/walletsRoute";
+import bookingRoute from "./routes/bookingsRoute";
 import { globalErrorMiddleware } from "./middlewares/ErrorMiddleware";
 import redisClient from "./../utils/redis";
 import logger from "./middlewares/loggerMiddleware";
@@ -27,7 +32,10 @@ app.use(
     origin: "*",
   })
 );
+
+// Body parser
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(logger);
 
 // Swagger
@@ -52,8 +60,13 @@ redisClient.connect();
 
 // Routes
 app.use("/api/v1/auth", authRoute);
-app.use("/api/v1/users", userRoute);
+app.use("/api/v1/users", usersRoute);
 app.use("/api/v1/wallets", walletsRoute);
+app.use("/api/v1/transactions", TransactionsRoute);
+app.use("/api/v1/availability", availabilitysRoute);
+app.use("/api/v1/tickets", ticketsRoute);
+app.use("/api/v1/consultants", consultantsRoute);
+app.use("/api/v1/bookings", bookingRoute);
 
 // Error Api
 app.use("*", (req, res, next) => {

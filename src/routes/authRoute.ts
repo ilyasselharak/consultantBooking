@@ -1,5 +1,5 @@
 import express from "express";
-import { regesterValidation } from './../../utils/validation/authValidation';
+import { registerValidation } from './../../utils/validation/authValidation';
 import {
   forgotPassword,
   resetPassword,

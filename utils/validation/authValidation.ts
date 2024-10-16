@@ -1,7 +1,7 @@
 import { check } from "express-validator";
 import validatorMiddleware from "../../src/middlewares/validationMiddleware";
 
-export const regesterValidation = [
+export const registerValidation = [
   check("fullName").exists().withMessage("Full name is required").notEmpty(),
   check("email")
     .exists()

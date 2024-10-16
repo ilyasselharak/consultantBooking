@@ -7,6 +7,10 @@ interface IUser {
   verified: boolean;
   token: string | null;
   expireDate: Date | null;
+  image: {
+    url: string;
+    public_id: string;
+  };
 }
 
 const userSchema = new mongoose.Schema<IUser>(
@@ -35,6 +39,10 @@ const userSchema = new mongoose.Schema<IUser>(
       type: Date,
       default: null,
     },
+    image: {
+      url: String,
+      public_id: String,
+    }
   },
   {
     timestamps: true,
