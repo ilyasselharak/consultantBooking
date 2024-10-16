@@ -400,10 +400,24 @@
                   "type": "string",
                   "format": "password",
                   "description": "The password of the user"
-                }
+                },
 
+                "image": {
+                  "type": "object",
+                  "description": "The image of the user",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "description": "The url of the image"
+                    },
+                    "public_id": {
+                      "type": "string",
+                      "description": "The public id of the image"
+                    }
+                  }
+                }
               },
-              "required": ["fullName", "email", "password"]
+              "required": ["password"]
             }
           }
         ],

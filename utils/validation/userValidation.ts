@@ -87,8 +87,9 @@ const updateUserValidation = [
     .isEmail()
     .withMessage("Invalid email")
     .custom(async (value, { req }) => {
-      if (!value) return true;
-      const exitUser = await User.findById({ email: value });
+        if (!value) return true;
+        
+        const exitUser = await User.findOne({ email: value });
       if (exitUser) {
         throw new Error("Email already exists");
       }
@@ -181,7 +182,10 @@ const updateUserValidation = [
         (value.url !== null && value.public_id === null)
       ) {
         throw new Error("Invalid image format");
-      }
+        }
+        
+
+        
       return true;
     }),
   validatorMiddleware,
