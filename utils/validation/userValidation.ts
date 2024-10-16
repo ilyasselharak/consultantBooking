@@ -3,6 +3,7 @@ import validatorMiddleware from "./../../src/middlewares/validationMiddleware";
 import { Types } from "mongoose";
 import User from "../../src/models/UserModel";
 import bcrypt from "bcryptjs";
+import { sendEmail } from "../sendEmail";
 
 const createUserValidation = [
   body("fullName")
@@ -59,25 +60,19 @@ const updateUserValidation = [
     .isMongoId()
     .withMessage("Invalid user ID"),
 
-  body("password")
+  body("currentPassword")
     .notEmpty()
     .withMessage("Password is required")
     .isLength({ min: 8, max: 20 })
-    .withMessage("Password must be between 8 and 20 characters"),
-  body("fullName")
-    .optional()
+    .withMessage("Password must be between 8 and 20 characters")
     .custom(async (value, { req }) => {
-      if (!value) {
-        return true;
-      }
-
+      if (!value) return true;
       const user = await User.findOne({ _id: req?.params?.id });
-
       if (!user) {
         throw new Error("User not found");
       }
       const isMatchPassword = await bcrypt.compare(
-        req.body.password,
+        req.body.currentPassword,
         user.password
       );
       if (!isMatchPassword) {
@@ -85,10 +80,80 @@ const updateUserValidation = [
       }
       return true;
     }),
-  body("email").optional().isEmail().withMessage("Invalid email"),
+    body("fullName").optional().isString().withMessage("Invalid full name"),
+  
+  body("email")
+    .optional()
+    .isEmail()
+    .withMessage("Invalid email")
+    .custom(async (value, { req }) => {
+      if (!value) return true;
+      const exitUser = await User.findById({ email: value });
+      if (exitUser) {
+        throw new Error("Email already exists");
+      }
+
+        const user = await User.findOne({ _id: req?.params?.id });
+        if (!user) {
+          throw new Error("User not found");
+        }
+
+
+      const token = Math.floor(100000 + Math.random() * 900000);
+
+      const link = `http://localhost:3000/verify-acount?id=${user?._id}`;
+
+      const verifyEmailHtml = `
+        <html lang="en">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Verify your email</title>
+        <style>
+        body {
+          font-family: Arial, sans-serif;
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+          margin: 0;
+          padding: 0;
+        }
+        h2 {
+          margin-top: 0;
+        }
+        a {
+          display: block;
+          margin-top: 1rem;
+          margin: auto;
+          padding: 1rem 4rem;
+          width: fit-content;
+          background-color: #4caf50;
+          color: white;
+          text-decoration: none;
+          border-radius: 4px;
+        }
+        </style>
+        </head>
+        <body>
+        <h2>Hello,</h2>
+        <p>Thank you for registering with our website. Your verification code is ${token}</p>
+        <a href="${link}">verify email</a>
+        </body>
+        </html>
+        `;
+        sendEmail(verifyEmailHtml, "verify your email", value);
+        
+        user.token = `${token}`;
+        user.expireDate = new Date(Date.now() + 1000 * 60);
+        user.save();
+      return true;
+    }),
   body("newPassword").optional().isLength({ min: 8, max: 20 }),
-    body("confirmPassword")
-      .optional()
+  body("confirmPassword")
+    .optional()
     .isLength({ min: 8, max: 20 })
     .withMessage("Confirm password must be between 8 and 20 characters")
     .custom(async (value, { req }) => {
@@ -97,6 +162,9 @@ const updateUserValidation = [
         throw new Error("Passwords do not match");
       }
 
+      console.log(req.body.newPassword);
+      console.log(value);
+      console.log(req.body.password);
       const hashPassword = bcrypt.hashSync(req.body.newPassword, 12);
 
       await User.findByIdAndUpdate(req?.params?.id, { password: hashPassword });
