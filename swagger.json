@@ -70,19 +70,15 @@
                   "description": "The password for the user account"
                 },
                   "image": {
-                    "type": "object",
-                    "properties": {
-                      "url": {
-                        "type": "string",
-                        "description": "The URL of the image"
-                      },
-                      "public_id": {
-                        "type": "string",
-                        "description": "The public ID of the image"
-                      }
+                    "url": {
+                      "type": "String",
+                      "default": null
                     },
-                    "required": ["url", "public_id"]
-                }
+                    "public_id": {
+                      "type": "String",
+                      "default": null
+                    }
+                  }
               },
               "required": ["fullName", "email", "password"]
             }

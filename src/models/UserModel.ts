@@ -8,8 +8,8 @@ interface IUser {
   token: string | null;
   expireDate: Date | null;
   image: {
-    url: string;
-    public_id: string;
+    url: string | null;
+    public_id: string | null;
   };
 }
 
@@ -40,9 +40,15 @@ const userSchema = new Schema<IUser>(
       default: null,
     },
     image: {
-      url: String,
-      public_id: String,
-    }
+      url: {
+        type: String,
+        default: null,
+      },
+      public_id: {
+        type: String,
+        default: null,
+      },
+    },
   },
   {
     timestamps: true,

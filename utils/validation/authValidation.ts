@@ -45,18 +45,6 @@ const loginValidation = [
     .withMessage("Password is required")
     .isLength({ min: 8, max: 20 })
     .withMessage("Password must be between 8 and 20 characters"),
-  body("confirmPassword")
-    .exists()
-    .notEmpty()
-    .withMessage("Confirm password is required")
-    .isLength({ min: 8, max: 20 })
-    .withMessage("Confirm password must be between 8 and 20 characters")
-    .custom((value, { req }) => {
-      if (value !== req.body.password) {
-        throw new Error("Passwords do not match");
-      }
-      return true;
-    }),
   validatorMiddleware,
 ];
 
