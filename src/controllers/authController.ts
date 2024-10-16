@@ -98,14 +98,12 @@ const login = asyncHandler(async (req: Request, res: Response, next: NextFunctio
     
     const isMatch = await bcrypt.compare(password, user.password);
     
-    console.log(isMatch)
     if (!isMatch) {
       return next(new ApiError("Invalid credentials", 400));
     }
     
     
     if (!user.verified) {
-      console.log(user)
       return next(new ApiError("User not verified", 400));
     }
     res.status(200).json({ message: "User logged in successfully", user });

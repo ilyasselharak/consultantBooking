@@ -246,9 +246,14 @@
                   "type": "string",
                   "format": "password",
                   "description": "The password address of the user"
+                },
+                "confirmPassword": {
+                  "type": "string",
+                  "format": "password",
+                  "description": "The password address of the user"
                 }
               },
-              "required": ["password"]
+              "required": ["password", "confirmPassword"]
             }
           }
         ],
