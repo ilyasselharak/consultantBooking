@@ -1181,14 +1181,6 @@
                 "businessName": {
                   "type": "string",
                   "description": "The business name of the consultancy"
-                },
-                "isTroubled": {
-                  "type": "boolean",
-                  "description": "The isTroubled of the consultancy"
-                },
-                "tickets": {
-                  "type": "array",
-                  "description": "The tickets of the consultancy"
                 }
               }
             }
