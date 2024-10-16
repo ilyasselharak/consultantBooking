@@ -26,6 +26,6 @@ router
   .route("/:id")
   .get(getUserByIdValidation, getUserById)
   .put(updateUserValidation, updateUser)
-  .delete(deleteUsersValidation, deleteUser);
+  .delete(deleteUserByIdValidation, deleteUser);
 
 export default router;
