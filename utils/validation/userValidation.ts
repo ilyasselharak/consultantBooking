@@ -2,6 +2,7 @@ import { body, param } from "express-validator";
 import validatorMiddleware from "./../../src/middlewares/validationMiddleware";
 import { Types } from "mongoose";
 import User from "../../src/models/UserModel";
+import bcrypt from 'bcryptjs';
 
 const createUserValidation = [
   body("fullName")
@@ -53,8 +54,16 @@ const updateUserValidation = [
     .optional()
     .custom(async (value, { req }) => {
       if (value) {
-          const password = await User.findOne({ _id: req?.params?.id });
-          console.log(password)
+          const user = await User.findOne({ _id: req?.params?.id });
+
+          if (!user) {
+              throw new Error("User not found");
+          }
+          const isMatchPassword = await bcrypt.compare(value, user.password);
+          if (!isMatchPassword) { 
+              throw new Error("Invalid password");
+          }
+          return true;
       }
     }),
   body("email").optional().isEmail().withMessage("Invalid email"),

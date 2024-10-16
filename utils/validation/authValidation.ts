@@ -22,8 +22,10 @@ const registerValidation = [
   body("image").custom((value) => {
     if (
       typeof value !== "object" ||
-      typeof value.url !== "string" ||
-      typeof value.public_id !== "string"
+      (value.url !== null && typeof value.url !== "string") ||
+      (value.public_id !== null && typeof value.public_id !== "string") ||
+      (value.url !== null && value.public_id === null) ||
+      (value.url !== null && value.public_id === null)
     ) {
       throw new Error("Invalid image format");
     }
