@@ -7,18 +7,25 @@ import {
   getBookings,
   updateBooking,
 } from "../controllers/bookingsController";
+import {
+  createBookingValidation,
+  updateBookingValidation,
+  getBookingByIdValidation,
+  deleteBookingByIdValidation,
+  deleteBookingsValidation,
+} from "../../utils/validation/bookingValidation";
 
 const router = express.Router();
 
 router
   .route("/")
-  .post(createBooking)
+  .post(createBookingValidation, createBooking)
   .get(getBookings)
-  .delete(deleteManyBookings);
+  .delete(deleteBookingsValidation, deleteManyBookings);
 router
   .route("/:id")
-  .get(getBookingById)
-  .put(updateBooking)
-  .delete(deleteBooking);
+  .get(getBookingByIdValidation, getBookingById)
+  .put(updateBookingValidation,updateBooking)
+  .delete(deleteBookingByIdValidation,deleteBooking);
 
 export default router;

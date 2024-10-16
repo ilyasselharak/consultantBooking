@@ -1,5 +1,12 @@
 import express from "express";
 import {
+  createConsultantValidation,
+  updateConsultantValidation,
+  deleteConsultantValidation,
+  getConsultantByIdValidation,
+  deleteConsultantsValidation,
+} from "../../utils/validation/consultantValidation";
+import {
   createConsultant,
   getConsultants,
   getConsultantById,
@@ -12,13 +19,13 @@ const router = express.Router();
 
 router
   .route("/")
-  .post(createConsultant)
+  .post(createConsultantValidation, createConsultant)
   .get(getConsultants)
-  .delete(deleteManyConsultants);
+  .delete(deleteConsultantsValidation, deleteManyConsultants);
 router
   .route("/:id")
-  .get(getConsultantById)
-  .put(updateConsultant)
-  .delete(deleteConsultant);
+  .get(getConsultantByIdValidation, getConsultantById)
+  .put(updateConsultantValidation, updateConsultant)
+  .delete(deleteConsultantValidation, deleteConsultant);
 
 export default router;

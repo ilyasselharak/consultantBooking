@@ -1,4 +1,12 @@
 import express from "express";
+
+import {
+  createAvailabilityValidation,
+  updateAvailabilityValidation,
+  getAvailabilityByIdValidation,
+  deleteAvailabilityByIdValidation,
+  deleteAvailabilitiesValidation,
+} from "../../utils/validation/availabilityValidation";
 import {
   createAvailability,
   deleteAvailability,
@@ -10,11 +18,15 @@ import {
 
 const router = express.Router();
 
-router.route("/").post(createAvailability).get(getAvailabilities).delete(deleteManyAvailabilities);
+router
+  .route("/")
+  .post(createAvailabilityValidation, createAvailability)
+  .get(getAvailabilities)
+  .delete(deleteAvailabilitiesValidation, deleteManyAvailabilities);
 router
   .route("/:id")
-  .get(getAvailabilityById)
-  .put(updateAvailability)
-  .delete(deleteAvailability);
+  .get(getAvailabilityByIdValidation, getAvailabilityById)
+  .put(updateAvailabilityValidation, updateAvailability)
+  .delete(deleteAvailabilityByIdValidation, deleteAvailability);
 
 export default router;

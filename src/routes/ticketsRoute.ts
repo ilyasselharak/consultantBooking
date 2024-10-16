@@ -1,5 +1,12 @@
 import express from "express";
 import {
+  createTicketValidation,
+  updateTicketValidation,
+  getTicketByIdValidation,
+  deleteTicketByIdValidation,
+  deleteTicketsValidation,
+} from "../../utils/validation/ticketValidation";
+import {
   createTicket,
   deleteManyTickets,
   deleteTicket,
@@ -10,7 +17,15 @@ import {
 
 const router = express.Router();
 
-router.route("/").post(createTicket).get(getTickets).delete(deleteManyTickets);
-router.route("/:id").get(getTicketById).put(updateTicket).delete(deleteTicket);
+router
+  .route("/")
+  .post(createTicketValidation, createTicket)
+  .get(getTickets)
+  .delete(deleteTicketsValidation, deleteManyTickets);
+router
+  .route("/:id")
+  .get(getTicketByIdValidation, getTicketById)
+  .put(updateTicketValidation, updateTicket)
+  .delete(deleteTicketByIdValidation, deleteTicket);
 
 export default router;

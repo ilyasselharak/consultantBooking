@@ -75,7 +75,6 @@ const register = asyncHandler(async (req: Request, res: Response) => {
 
     await newUser.save();
 
-    await Wallet.create({ userId: newUser._id });
 
     res.status(201).json({ message: "User signed in successfully" });
   } catch (error) {
@@ -120,8 +119,7 @@ const login = asyncHandler(async (req: Request, res: Response) => {
 const verifyUser = asyncHandler(async (req: Request, res: Response) => {
   try {
     const { token } = req.body;
-    console.log(req.params);
-
+    
     const user = await User.findById(req.params.id);
 
     if (!user) {
@@ -211,7 +209,6 @@ const verifyUser = asyncHandler(async (req: Request, res: Response) => {
 // @access  Public
 const forgotPassword = asyncHandler(async (req: Request, res: Response) => {
   try {
-    console.log(req.body);
     const { email } = req.body;
     const user = await User.findOne({ email });
     if (!user) {

@@ -1,5 +1,12 @@
 import express from "express";
 import {
+  createUserValidation,
+  updateUserValidation,
+  deleteUserByIdValidation,
+  deleteUsersValidation,
+  getUserByIdValidation,
+} from "./../../utils/validation/userValidation";
+import {
   createUser,
   deleteManyUsers,
   deleteUser,
@@ -10,7 +17,15 @@ import {
 
 const router = express.Router();
 
-router.route("/").get(getUsers).post(createUser).delete(deleteManyUsers);
-router.route("/:id").get(getUserById).put(updateUser).delete(deleteUser);
+router
+  .route("/")
+  .get(getUsers)
+  .post(createUserValidation, createUser)
+  .delete(deleteUsersValidation, deleteManyUsers);
+router
+  .route("/:id")
+  .get(getUserByIdValidation, getUserById)
+  .put(updateUserValidation, updateUser)
+  .delete(deleteUsersValidation, deleteUser);
 
 export default router;

@@ -68,6 +68,20 @@
                 "password": {
                   "type": "string",
                   "description": "The password for the user account"
+                },
+                  "image": {
+                    "type": "object",
+                    "properties": {
+                      "url": {
+                        "type": "string",
+                        "description": "The URL of the image"
+                      },
+                      "public_id": {
+                        "type": "string",
+                        "description": "The public ID of the image"
+                      }
+                    },
+                    "required": ["url", "public_id"]
                 }
               },
               "required": ["fullName", "email", "password"]
@@ -975,52 +989,69 @@
               "properties": {
                 "userId": {
                   "type": "string",
-                  "description": "The ID of the user"
+                  "required": true
                 },
                 "expertise": {
                   "type": "string",
-                  "description": "The expertise of the consultant"
-                },
-                "ratingAverage": {
-                  "type": "number",
-                  "description": "The rating average of the consultancy"
-                },
-                "ratingCount": {
-                  "type": "number",
-                  "description": "The rating count of the consultancy"
+                  "required": true
                 },
                 "ICE": {
                   "type": "string",
-                  "description": "The ICE of the consultancy"
+                  "required": true
                 },
                 "professionalId": {
                   "type": "string",
-                  "description": "The professional ID of the consultancy"
+                  "required": true
                 },
                 "taxId": {
                   "type": "string",
-                  "description": "The tax ID of the consultancy"
+                  "required": true
                 },
                 "CIN": {
                   "type": "string",
-                  "description": "The CIN of the consultancy"
+                  "required": true
                 },
                 "businessName": {
                   "type": "string",
-                  "description": "The business name of the consultancy"
+                  "required": true
+                },
+                "address": {
+                  "type": "object",
+                  "properties": {
+                    "city": {
+                      "type": "string",
+                      "required": true
+                    },
+                    "street": {
+                      "type": "string",
+                      "required": true
+                    },
+                    "zipCode": {
+                      "type": "string",
+                      "required": true
+                    }
+                  },
+                  "required": ["city", "street", "zipCode"]
+                },
+                "phoneNumber": {
+                  "type": "string",
+                  "required": true
+                },
+                "priceHour": {
+                  "type": "number",
+                  "default": 0
                 }
               },
               "required": [
                 "userId",
                 "expertise",
-                "ratingAverage",
-                "ratingCount",
                 "ICE",
                 "professionalId",
                 "taxId",
                 "CIN",
                 "businessName",
-                "tickets"
+                "address",
+                "phoneNumber"
               ]
             }
           }

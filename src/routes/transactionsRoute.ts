@@ -1,4 +1,12 @@
 import express from "express";
+
+import {
+  createTransactionValidation,
+  updateTransactionValidation,
+  getTransactionByIdValidation,
+  deleteTransactionByIdValidation,
+  deleteTransactionsValidation,
+} from "../../utils/validation/transactionValidation";
 import {
   createTransaction,
   deleteManyTransactions,
@@ -12,13 +20,13 @@ const router = express.Router();
 
 router
   .route("/")
-  .post(createTransaction)
+  .post(createTransactionValidation, createTransaction)
   .get(getTransactions)
-  .delete(deleteManyTransactions);
+  .delete(deleteTransactionsValidation, deleteManyTransactions);
 router
   .route("/:id")
-  .get(getTransactionById)
-  .put(updateTransaction)
-  .delete(deleteTransaction);
+  .get(getTransactionByIdValidation, getTransactionById)
+  .put(updateTransactionValidation, updateTransaction)
+  .delete(deleteTransactionByIdValidation, deleteTransaction);
 
 export default router;

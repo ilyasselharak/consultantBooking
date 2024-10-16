@@ -1,5 +1,11 @@
 import express from "express";
-import { registerValidation } from './../../utils/validation/authValidation';
+import {
+  forgotPasswordValidation,
+  loginValidation,
+  registerValidation,
+  resetPasswordValidation,
+  verifiedUserValidation,
+} from "./../../utils/validation/authValidation";
 import {
   forgotPassword,
   resetPassword,
@@ -10,14 +16,18 @@ import {
 
 const router = express.Router();
 
-router.post("/login", login);
+router.post("/login", loginValidation, login);
 
-router.post("/register" , register);
+router.post("/register", registerValidation, register);
 
-router.post("/verify/:id", verifyUser);
+router.post("/verify/:id", verifiedUserValidation, verifyUser);
 
-router.post("/forgot-password", forgotPassword);
+router.post("/forgot-password", forgotPasswordValidation, forgotPassword);
 
-router.post("/reset-password/:id/:token", resetPassword);
+router.post(
+  "/reset-password/:id/:token",
+  resetPasswordValidation,
+  resetPassword
+);
 
 export default router;

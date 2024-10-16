@@ -11,14 +11,6 @@ const consultantSchema = new Schema(
       type: String,
       required: true,
     },
-    ratingAverage: {
-      type: Number,
-      default: 0,
-    },
-    ratingCount: {
-      type: Number,
-      default: 0,
-    },
     ICE: {
       type: String,
       required: true,
@@ -59,6 +51,14 @@ const consultantSchema = new Schema(
       required: true,
     },
     priceHour: {
+      type: Number,
+      default: 0,
+    },
+    ratingAverage: {
+      type: Number,
+      default: 0,
+    },
+    ratingCount: {
       type: Number,
       default: 0,
     },
