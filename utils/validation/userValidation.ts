@@ -87,7 +87,8 @@ const updateUserValidation = [
     }),
   body("email").optional().isEmail().withMessage("Invalid email"),
   body("newPassword").optional().isLength({ min: 8, max: 20 }),
-  body("confirmPassword")
+    body("confirmPassword")
+      .optional()
     .isLength({ min: 8, max: 20 })
     .withMessage("Confirm password must be between 8 and 20 characters")
     .custom(async (value, { req }) => {
