@@ -391,6 +391,11 @@
                   "format": "password",
                   "description": "The password of the user"
                 },
+                "newPassword": {
+                  "type": "string",
+                  "format": "password",
+                  "description": "The password of the user"
+                },
                 "confirmPassword": {
                   "type": "string",
                   "format": "password",
