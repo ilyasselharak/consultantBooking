@@ -2,7 +2,7 @@ import { body, param } from "express-validator";
 import validatorMiddleware from "./../../src/middlewares/validationMiddleware";
 import { Types } from "mongoose";
 import User from "../../src/models/UserModel";
-import bcrypt from 'bcryptjs';
+import bcrypt from "bcryptjs";
 
 const createUserValidation = [
   body("fullName")
@@ -34,6 +34,20 @@ const createUserValidation = [
       }
       return true;
     }),
+  body("image")
+    .optional()
+    .custom((value) => {
+      if (
+        typeof value !== "object" ||
+        (value.url !== null && typeof value.url !== "string") ||
+        (value.public_id !== null && typeof value.public_id !== "string") ||
+        (value.url !== null && value.public_id === null) ||
+        (value.url !== null && value.public_id === null)
+      ) {
+        throw new Error("Invalid image format");
+      }
+      return true;
+    }),
   validatorMiddleware,
 ];
 
@@ -53,26 +67,51 @@ const updateUserValidation = [
   body("fullName")
     .optional()
     .custom(async (value, { req }) => {
-      if (value) {
-          const user = await User.findOne({ _id: req?.params?.id });
-
-          if (!user) {
-              throw new Error("User not found");
-          }
-          const isMatchPassword = await bcrypt.compare(value, user.password);
-          if (!isMatchPassword) { 
-              throw new Error("Invalid password");
-          }
-          return true;
+      if (!value) {
+        return true;
       }
+
+      const user = await User.findOne({ _id: req?.params?.id });
+
+      if (!user) {
+        throw new Error("User not found");
+      }
+      const isMatchPassword = await bcrypt.compare(
+        req.body.password,
+        user.password
+      );
+      if (!isMatchPassword) {
+        throw new Error("Invalid password");
+      }
+      return true;
     }),
   body("email").optional().isEmail().withMessage("Invalid email"),
+  body("newPassword").optional().isLength({ min: 8, max: 20 }),
   body("confirmPassword")
     .isLength({ min: 8, max: 20 })
     .withMessage("Confirm password must be between 8 and 20 characters")
-    .custom((value, { req }) => {
-      if (value !== req.body.password) {
+    .custom(async (value, { req }) => {
+      if (!req.body.newPassword) return true;
+      if (value !== req.body.newPassword) {
         throw new Error("Passwords do not match");
+      }
+
+      const hashPassword = bcrypt.hashSync(req.body.newPassword, 12);
+
+      await User.findByIdAndUpdate(req?.params?.id, { password: hashPassword });
+      return true;
+    }),
+  body("image")
+    .optional()
+    .custom((value) => {
+      if (
+        typeof value !== "object" ||
+        (value.url !== null && typeof value.url !== "string") ||
+        (value.public_id !== null && typeof value.public_id !== "string") ||
+        (value.url !== null && value.public_id === null) ||
+        (value.url !== null && value.public_id === null)
+      ) {
+        throw new Error("Invalid image format");
       }
       return true;
     }),
