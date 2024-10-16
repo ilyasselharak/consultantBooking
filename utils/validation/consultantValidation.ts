@@ -9,7 +9,7 @@ const createConsultantValidation = [
     .withMessage("User ID is required")
     .isMongoId()
     .withMessage("Invalid user ID"),
-  body("expertise")
+  body("expertise") 
     .exists()
     .notEmpty()
     .withMessage("Expertise is required")

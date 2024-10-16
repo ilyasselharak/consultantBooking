@@ -1162,14 +1162,6 @@
                   "type": "string",
                   "description": "The expertise of the consultancy"
                 },
-                "ratingAverage": {
-                  "type": "number",
-                  "description": "The rating average of the consultancy"
-                },
-                "ratingCount": {
-                  "type": "number",
-                  "description": "The rating count of the consultancy"
-                },
                 "ICE": {
                   "type": "string",
                   "description": "The ICE of the consultancy"
