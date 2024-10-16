@@ -87,23 +87,27 @@ const register = asyncHandler(async (req: Request, res: Response, next: NextFunc
 // @access  Public
 const login = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   try {
+
     const { email, password } = req.body;
-
+    
     const user = await User.findOne({ email });
-
+    
     if (!user) {
       return next(new ApiError("Invalid credentials", 400));
     }
-
-    if (!user.verified) {
-      return next(new ApiError("User not verified", 400));
-    }
-
+    
     const isMatch = await bcrypt.compare(password, user.password);
+    
+    console.log(isMatch)
     if (!isMatch) {
       return next(new ApiError("Invalid credentials", 400));
     }
-
+    
+    
+    if (!user.verified) {
+      console.log(user)
+      return next(new ApiError("User not verified", 400));
+    }
     res.status(200).json({ message: "User logged in successfully", user });
   } catch (error) {
     return next(new ApiError(`Error logging in user: ${error}`, 500));
