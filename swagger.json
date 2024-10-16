@@ -75,11 +75,13 @@
                   "properties": {
                     "url": {
                       "type": "string",
-                      "description": "The URL of the image"
+                      "description": "The URL of the image",
+                      "default": null
                     },
                     "public_id": {
                       "type": "string",
-                      "description": "The public ID of the image"
+                      "description": "The public ID of the image",
+                      "default": null
                     }
                   }
                 }

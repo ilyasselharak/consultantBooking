@@ -53,7 +53,8 @@ const updateUserValidation = [
     .optional()
     .custom(async (value, { req }) => {
       if (value) {
-        // const password = await User.findOne({ _id: req.params.id });
+          const password = await User.findOne({ _id: req?.params?.id });
+          console.log(password)
       }
     }),
   body("email").optional().isEmail().withMessage("Invalid email"),
