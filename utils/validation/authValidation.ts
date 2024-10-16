@@ -20,6 +20,7 @@ const registerValidation = [
     .isLength({ min: 8, max: 20 })
     .withMessage("Password must be between 8 and 20 characters"),
   body("image").custom((value) => {
+    console.log(value)
     if (
       typeof value !== "object" ||
       typeof value.url !== "string" ||

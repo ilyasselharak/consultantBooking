@@ -69,16 +69,20 @@
                   "type": "string",
                   "description": "The password for the user account"
                 },
-                  "image": {
+                "image": {
+                  "type": "object",
+                  "description": "The image of the user",
+                  "properties": {
                     "url": {
-                      "type": "String",
-                      "default": null
+                      "type": "string",
+                      "description": "The URL of the image"
                     },
                     "public_id": {
-                      "type": "String",
-                      "default": null
+                      "type": "string",
+                      "description": "The public ID of the image"
                     }
                   }
+                }
               },
               "required": ["fullName", "email", "password"]
             }
