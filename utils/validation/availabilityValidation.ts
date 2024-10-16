@@ -3,7 +3,7 @@ import validatorMiddleware from "./../../src/middlewares/validationMiddleware";
 import { Types } from "mongoose";
 
 const createAvailabilityValidation = [
-  param("consultantId")
+  body("consultantId")
     .exists()
     .notEmpty()
     .withMessage("Consultant ID is required")
