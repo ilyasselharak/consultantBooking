@@ -31,13 +31,13 @@ const createAvailabilityValidation = [
     .exists()
     .notEmpty()
     .withMessage("Start time is required")
-    .isDate()
+    .isISO8601()
     .withMessage("Invalid start time"),
   body("availabilityTimes.*.times.*.endTime")
     .exists()
     .notEmpty()
     .withMessage("End time is required")
-    .isDate()
+    .isISO8601()
     .withMessage("Invalid end time"),
   validatorMiddleware,
 ];
