@@ -3,9 +3,9 @@ import asyncHandler from "express-async-handler";
 import User from "../models/UserModel";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
-import Wallet from "../models/WalletModel";
 import { sendEmail } from "./../../utils/sendEmail";
 import { ApiError } from "../../utils/APIError";
+import jwt from "jsonwebtoken";
 
 // @desc    Register user
 // @route   POST /api/v1/auth/register
@@ -15,10 +15,10 @@ const register = asyncHandler(
     console.log(req.body);
     try {
       // TODO: Implement authentication logic here
-      const { fullName, email, password } = req.body;
+      const { fullName, email, password, role } = req.body;
       const user = await User.findOne({ email });
       if (user) {
-        return next(new ApiError("User already exists", 400));
+        return next(new ApiError("Invalid credentials", 400));
       }
 
       const token = Math.floor(100000 + Math.random() * 900000);
@@ -28,6 +28,7 @@ const register = asyncHandler(
         email,
         password: await bcrypt.hash(password, 12),
         token,
+        role,
         expireDate: new Date(Date.now() + 1000 * 60),
       });
       const link = `http://localhost:3000/verify-acount?id=${newUser._id}`;
@@ -93,7 +94,9 @@ const login = asyncHandler(
 
       const user = await User.findOne({ email });
 
-      if (!user) {
+      if (
+        !user 
+      ) {
         return next(new ApiError("Invalid credentials", 400));
       }
 
@@ -103,13 +106,17 @@ const login = asyncHandler(
         return next(new ApiError("Invalid credentials", 400));
       }
 
+      
       if (!user.verified) {
+        if (user.role !== "Customer" && user.role !== "Consultant") {
+          return next(new ApiError("Invalid credentials", 400));
+        }
         const token = Math.floor(100000 + Math.random() * 900000);
         user.token = `${token}`;
         user.expireDate = new Date(Date.now() + 1000 * 60);
 
         const link = `http://localhost:3000/verify-acount?id=${user._id}`;
-        const verifyEmailHtml = `
+        const verifyEmailHtml =`
         <html lang="en">
         <head>
         <meta charset="UTF-8">
@@ -156,7 +163,10 @@ const login = asyncHandler(
           )
         );
       }
-      res.status(200).json({ message: "User logged in successfully", user });
+      const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET!, {
+        expiresIn: "1h",
+      });
+      res.status(200).json({ message: "User logged in successfully", token });
     } catch (error) {
       return next(new ApiError(`Error logging in user: ${error}`, 500));
     }

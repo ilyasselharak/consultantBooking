@@ -16,7 +16,7 @@ const createBooking = createOne(Booking);
 // @desc    Get bookings
 // @route   GET /api/v1/bookings
 // @access  Private
-const getBookings = getMany(Booking);
+const getBookings = getMany(Booking, {});
 
 // @desc    Get booking
 // @route   GET /api/v1/bookings/:id

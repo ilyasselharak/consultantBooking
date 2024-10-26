@@ -17,12 +17,12 @@ const createTransaction = createOne(Wallet);
 // @desc    Get transactions
 // @route   GET /api/v1/transactions
 // @access  Private
-const getTransactions = getMany(Wallet);
+const getTransactions = getMany(Wallet, {});
 
 // @desc    Get transaction
 // @route   GET /api/v1/transactions/:id
 // @access  Private
-const getTransactionById = getById(Wallet);
+const getTransactionById = getById(Wallet,);
 
 
 // @desc    Update transaction

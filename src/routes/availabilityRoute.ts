@@ -1,19 +1,19 @@
-import express from "express";
+import express, { Router, Request } from "express";
 
 import {
   createAvailabilityValidation,
-  updateAvailabilityValidation,
   getAvailabilityByIdValidation,
+  updateAvailabilityValidation,
   deleteAvailabilityByIdValidation,
   deleteAvailabilitiesValidation,
 } from "../../utils/validation/availabilityValidation";
 import {
   createAvailability,
+  updateAvailability,
   deleteAvailability,
   deleteManyAvailabilities,
   getAvailabilities,
   getAvailabilityById,
-  updateAvailability,
 } from "../controllers/availabilityController";
 
 const router = express.Router();

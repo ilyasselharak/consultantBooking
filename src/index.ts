@@ -9,9 +9,13 @@ import { resolvers, typeDefs } from "./graphql";
 import { print } from "graphql";
 import connectDB from "./config/connectDB";
 import authRoute from "./routes/authRoute";
+import staffsRoute from "./routes/staffRoute";
+import permissionsRoute from "./routes/permissionsRoute";
 import usersRoute from "./routes/usersRoute";
 import TransactionsRoute from "./routes/transactionsRoute";
 import availabilitysRoute from "./routes/availabilityRoute";
+import availabilityDaysRoute from "./routes/availabilityDaysRoute";
+import availabilityTimesRoute from "./routes/availabilityTimesRoute";
 import ticketsRoute from "./routes/ticketsRoute";
 import consultantsRoute from "./routes/consultantsRoute";
 import walletsRoute from "./routes/walletsRoute";
@@ -42,28 +46,32 @@ app.use(logger);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // run apollo server with graphql and rest api
-(async () => {
-  const serverApollo = new ApolloServer({
-    typeDefs: print(typeDefs),
-    resolvers: resolvers,
-    introspection: true,
-  });
-  await serverApollo.start();
-  serverApollo.applyMiddleware({ app: app as any, path: "/api" });
-  console.log(
-    `��� Server ready at http://localhost:${PORT}${serverApollo.graphqlPath}`
-  );
-})();
+// (async () => {
+//   const serverApollo = new ApolloServer({
+//     typeDefs: print(typeDefs),
+//     resolvers: resolvers,
+//     introspection: true,
+//   });
+//   await serverApollo.start();
+//   serverApollo.applyMiddleware({ app: app as any, path: "/api" });
+//   console.log(
+//     `��� Server ready at http://localhost:${PORT}${serverApollo.graphqlPath}`
+//   );
+// })();
 
 // Connect to Redis
-redisClient.connect();
+// redisClient.connect();
 
 // Routes
 app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/staffs", staffsRoute)
+app.use("/api/v1/permissions", permissionsRoute);
 app.use("/api/v1/users", usersRoute);
 app.use("/api/v1/wallets", walletsRoute);
 app.use("/api/v1/transactions", TransactionsRoute);
 app.use("/api/v1/availability", availabilitysRoute);
+app.use("/api/v1/availabilityDays", availabilityDaysRoute);
+app.use("/api/v1/availabilityTimes", availabilityTimesRoute);
 app.use("/api/v1/tickets", ticketsRoute);
 app.use("/api/v1/consultants", consultantsRoute);
 app.use("/api/v1/bookings", bookingRoute);

@@ -1,5 +1,4 @@
 import User from "../models/UserModel";
-import Wallet from "../models/WalletModel";
 import {
   createOne,
   deleteMany,
@@ -18,7 +17,7 @@ const createUser = createOne(User);
 // @desc    Get all users
 // @route   GET /api/v1/users
 // @access  Private
-const getUsers = getMany(User);
+const getUsers = getMany(User, "-password -verified -token");
 
 // @desc    Get user
 // @route   GET /api/v1/users/:id

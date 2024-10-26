@@ -12,6 +12,14 @@
       "description": "Authentication routes"
     },
     {
+      "name": "Staffs",
+      "description": "Staff management routes"
+    },
+    {
+      "name": "Permissions",
+      "description": "Permission management routes"
+    },
+    {
       "name": "Users",
       "description": "User management routes"
     },
@@ -23,6 +31,15 @@
       "name": "Availability",
       "description": "Availability management routes"
     },
+    {
+      "name": "AvailabilityDays",
+      "description": "Availability days management routes"
+    },
+    {
+      "name": "AvailabilityTimes",
+      "description": "Availability times management routes"
+    },
+
     {
       "name": "Tickets",
       "description": "Ticket management routes"
@@ -68,6 +85,11 @@
                 "password": {
                   "type": "string",
                   "description": "The password for the user account"
+                },
+                "role": {
+                  "type": "string",
+                  "description": "The role of the user",
+                  "enum": ["customer", "consultant"]
                 },
                 "image": {
                   "type": "object",
@@ -276,12 +298,528 @@
         }
       }
     },
+    "/api/v1/staffs": {
+      "get": {
+        "tags": ["Staffs"],
+        "summary": "Get all staff",
+        "description": "Get all staff",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Staffs"],
+        "summary": "Create staff",
+        "description": "Create staff",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "fullName": {
+                  "type": "string",
+                  "description": "The full name of the staff"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "description": "The email address of the staff"
+                },
+                "password": {
+                  "type": "string",
+                  "format": "password",
+                  "description": "The password of the staff"
+                },
+                "role": {
+                  "type": "string",
+                  "description": "The role of the staff",
+                  "enum": ["Agent", "manager", "superAdmin", "supervisor"]
+                },
+                "phoneNumber": {
+                  "type": "string",
+                  "description": "The phone number of the staff"
+                },
+                "image": {
+                  "type": "string",
+                  "format": "binary",
+                  "description": "The image of the staff",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "description": "The url of the image"
+                    },
+                    "public_id": {
+                      "type": "string",
+                      "description": "The public id of the image"
+                    }
+                  }
+                }
+              },
+              "required": ["fullName", "email", "password", "role"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/staffs/{id}": {
+      "get": {
+        "tags": ["Staffs"],
+        "summary": "Get staff by ID",
+        "description": "Get staff by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the staff"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Staffs"],
+        "summary": "Update staff",
+        "description": "Update staff",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the staff"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "fullName": {
+                  "type": "string",
+                  "description": "The full name of the staff"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "description": "The email address of the staff"
+                },
+                "role": {
+                  "type": "string",
+                  "description": "The role of the staff",
+                  "enum": ["Agent", "manager", "superAdmin", "supervisor"]
+                },
+                "phoneNumber": {
+                  "type": "string",
+                  "description": "The phone number of the staff"
+                },
+                "image": {
+                  "type": "string",
+                  "format": "binary",
+                  "description": "The image of the staff",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "description": "The url of the image"
+                    },
+                    "public_id": {
+                      "type": "string",
+                      "description": "The public id of the image"
+                    }
+                  }
+                }
+              },
+              "required": ["fullName", "email", "role"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "The message of the response"
+                }
+              },
+              "required": ["message"]
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "The message of the response"
+                }
+              },
+              "required": ["message"]
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "The message of the response"
+                }
+              },
+              "required": ["message"]
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Staffs"],
+        "summary": "Delete staff",
+        "description": "Delete staff",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the staff"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Staff deleted successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/permissions": {
+      "get": {
+        "tags": ["Permissions"],
+        "summary": "Get all permissions",
+        "description": "Get all permissions",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Permission"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Permissions"],
+        "summary": "Create permission",
+        "description": "Create permission",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "role": {
+                  "type": "string",
+                  "description": "The role of the permission",
+                  "enum": ["manager", "supervisor", "agent"]
+                },
+                "permissions": {
+                  "type": "object",
+                  "properties": {
+                    "isCreate": {
+                      "type": "object",
+                      "properties": {
+                        "User": { "type": "boolean", "default": false },
+                        "Consultant": { "type": "boolean", "default": false },
+                        "Transaction": { "type": "boolean", "default": false },
+                        "Wallet": { "type": "boolean", "default": false },
+                        "Availability": { "type": "boolean", "default": false },
+                        "Permission": { "type": "boolean", "default": false },
+                        "Ticket": { "type": "boolean", "default": false },
+                        "Booking": { "type": "boolean", "default": false },
+                        "Staff": { "type": "boolean", "default": false }
+                      }
+                    },
+                    "isUpdate": {
+                      "type": "object",
+                      "properties": {
+                        "User": { "type": "boolean", "default": false },
+                        "Consultant": { "type": "boolean", "default": false },
+                        "Transaction": { "type": "boolean", "default": false },
+                        "Wallet": { "type": "boolean", "default": false },
+                        "Availability": { "type": "boolean", "default": false },
+                        "Permission": { "type": "boolean", "default": false },
+                        "Ticket": { "type": "boolean", "default": false },
+                        "Booking": { "type": "boolean", "default": false },
+                        "Staff": { "type": "boolean", "default": false }
+                      }
+                    },
+                    "isDelete": {
+                      "type": "object",
+                      "properties": {
+                        "User": { "type": "boolean", "default": false },
+                        "Consultant": { "type": "boolean", "default": false },
+                        "Transaction": { "type": "boolean", "default": false },
+                        "Wallet": { "type": "boolean", "default": false },
+                        "Availability": { "type": "boolean", "default": false },
+                        "Permission": { "type": "boolean", "default": false },
+                        "Ticket": { "type": "boolean", "default": false },
+                        "Booking": { "type": "boolean", "default": false },
+                        "Staff": { "type": "boolean", "default": false }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Permission created successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid role"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/permissions/{id}": {
+      "delete": {
+        "tags": ["Permissions"],
+        "summary": "Delete permission",
+        "description": "Delete permission",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the permission"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Permission deleted successfully"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Permissions"],
+        "summary": "Update permission",
+        "description": "Update permission",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the permission"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "role": {
+                  "type": "string",
+                  "description": "The role of the permission",
+                  "enum": ["manager", "supervisor", "agent"]
+                },
+                "permissions": {
+                  "type": "object",
+                  "properties": {
+                    "isCreate": {
+                      "type": "object",
+                      "properties": {
+                        "User": { "type": "boolean", "default": false },
+                        "Consultant": { "type": "boolean", "default": false },
+                        "Transaction": { "type": "boolean", "default": false },
+                        "Wallet": { "type": "boolean", "default": false },
+                        "Availability": { "type": "boolean", "default": false },
+                        "Permission": { "type": "boolean", "default": false },
+                        "Ticket": { "type": "boolean", "default": false },
+                        "Booking": { "type": "boolean", "default": false },
+                        "Staff": { "type": "boolean", "default": false }
+                      }
+                    },
+                    "isRead": {
+                      "type": "object",
+                      "properties": {
+                        "User": { "type": "boolean", "default": false },
+                        "Consultant": { "type": "boolean", "default": false },
+                        "Transaction": { "type": "boolean", "default": false },
+                        "Wallet": { "type": "boolean", "default": false },
+                        "Availability": { "type": "boolean", "default": false },
+                        "Permission": { "type": "boolean", "default": false },
+                        "Ticket": { "type": "boolean", "default": false },
+                        "Booking": { "type": "boolean", "default": false },
+                        "Staff": { "type": "boolean", "default": false }
+                      }
+                    },
+                    "isUpdate": {
+                      "type": "object",
+                      "properties": {
+                        "User": { "type": "boolean", "default": false },
+                        "Consultant": { "type": "boolean", "default": false },
+                        "Transaction": { "type": "boolean", "default": false },
+                        "Wallet": { "type": "boolean", "default": false },
+                        "Availability": { "type": "boolean", "default": false },
+                        "Permission": { "type": "boolean", "default": false },
+                        "Ticket": { "type": "boolean", "default": false },
+                        "Booking": { "type": "boolean", "default": false },
+                        "Staff": { "type": "boolean", "default": false }
+                      }
+                    }
+                  },
+                  "isDelete": {
+                    "type": "object",
+                    "properties": {
+                      "User": { "type": "boolean", "default": false },
+                      "Consultant": { "type": "boolean", "default": false },
+                      "Transaction": { "type": "boolean", "default": false },
+                      "Wallet": { "type": "boolean", "default": false },
+                      "Availability": { "type": "boolean", "default": false },
+                      "Permission": { "type": "boolean", "default": false },
+                      "Ticket": { "type": "boolean", "default": false },
+                      "Booking": { "type": "boolean", "default": false },
+                      "Staff": { "type": "boolean", "default": false }
+                    }
+                  }
+                },
+                "required": ["isCreate", "isRead", "isUpdate", "isDelete"]
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Permission updated successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid role"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/api/v1/users": {
       "post": {
         "tags": ["Users"],
         "summary": "Create user",
         "description": "Create user",
         "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
           {
             "name": "body",
             "in": "body",
@@ -298,7 +836,39 @@
                   "format": "email",
                   "description": "The email address of the user"
                 },
+                "role": {
+                  "type": "string",
+                  "description": "The role of the user",
+                  "enum": ["customer", "consultant"]
+                },
+                "phoneNumber": {
+                  "type": "string",
+                  "description": "The phone number of the user"
+                },
+                "image": {
+                  "type": "object",
+                  "format": "binary",
+                  "description": "The image of the user",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "description": "The URL of the image",
+                      "default": null
+                    },
+                    "public_id": {
+                      "type": "string",
+                      "description": "The public ID of the image",
+                      "default": null
+                    }
+                  }
+                },
+
                 "password": {
+                  "type": "string",
+                  "format": "password",
+                  "description": "The password of the user"
+                },
+                "confirmPassword": {
                   "type": "string",
                   "format": "password",
                   "description": "The password of the user"
@@ -324,6 +894,15 @@
         "tags": ["Users"],
         "summary": "Get all users",
         "description": "Get all users",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -340,6 +919,13 @@
         "summary": "Get user by ID",
         "description": "Get user by ID",
         "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
           {
             "name": "id",
             "in": "path",
@@ -363,6 +949,13 @@
         "summary": "Update user",
         "description": "Update user",
         "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
           {
             "name": "id",
             "in": "path",
@@ -459,6 +1052,15 @@
         "tags": ["Transactions"],
         "summary": "Get all transactions",
         "description": "Get all transactions",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -474,6 +1076,13 @@
         "summary": "Create transaction",
         "description": "Create transaction",
         "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
           {
             "name": "body",
             "in": "body",
@@ -518,6 +1127,13 @@
         "description": "Delete many transaction",
         "parameters": [
           {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
             "name": "body",
             "in": "body",
             "required": true,
@@ -556,6 +1172,13 @@
         "description": "Get transaction by ID",
         "parameters": [
           {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
@@ -578,6 +1201,13 @@
         "summary": "Update transaction",
         "description": "Update transaction",
         "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
           {
             "name": "id",
             "in": "path",
@@ -629,6 +1259,13 @@
         "description": "Delete transaction",
         "parameters": [
           {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
@@ -648,6 +1285,15 @@
         "tags": ["Wallets"],
         "summary": "Get all wallets",
         "description": "Get all wallets",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -662,6 +1308,13 @@
         "summary": "Create wallet",
         "description": "Create wallet",
         "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
           {
             "name": "body",
             "in": "body",
@@ -703,6 +1356,13 @@
         "description": "Delete many wallet",
         "parameters": [
           {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
             "name": "body",
             "in": "body",
             "required": true,
@@ -741,6 +1401,13 @@
         "description": "Get wallet by ID",
         "parameters": [
           {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
@@ -763,6 +1430,13 @@
         "summary": "Update wallet",
         "description": "Update wallet",
         "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
           {
             "name": "id",
             "in": "path",
@@ -805,6 +1479,13 @@
         "description": "Delete wallet",
         "parameters": [
           {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
@@ -830,6 +1511,15 @@
         "tags": ["Tickets"],
         "summary": "Get all tickets",
         "description": "Get all tickets",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -845,6 +1535,13 @@
         "summary": "Create ticket",
         "description": "Create ticket",
         "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
           {
             "name": "body",
             "in": "body",
@@ -902,6 +1599,13 @@
         "description": "Delete many ticket",
         "parameters": [
           {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
             "name": "body",
             "in": "body",
             "required": true,
@@ -940,6 +1644,13 @@
         "description": "Get ticket",
         "parameters": [
           {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
@@ -961,6 +1672,13 @@
         "summary": "Update ticket",
         "description": "Update ticket",
         "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
           {
             "name": "id",
             "in": "path",
@@ -1003,6 +1721,15 @@
         "tags": ["Consultants"],
         "summary": "Get all consultants",
         "description": "Get all consultancy",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -1017,6 +1744,13 @@
         "summary": "Create consultancy",
         "description": "Create consultancy",
         "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
           {
             "name": "body",
             "in": "body",
@@ -1124,7 +1858,15 @@
         "tags": ["Consultants"],
         "summary": "Get one consultancy",
         "description": "Get one consultancy",
+
         "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
           {
             "name": "id",
             "in": "path",
@@ -1144,6 +1886,13 @@
         "summary": "Update consultancy",
         "description": "Update consultancy",
         "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
           {
             "name": "id",
             "in": "path",
@@ -1204,6 +1953,13 @@
         "description": "Delete one consultancy",
         "parameters": [
           {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
@@ -1229,6 +1985,15 @@
         "tags": ["Availability"],
         "summary": "Get availability",
         "description": "Get availability",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -1241,6 +2006,13 @@
         "description": "Create availability",
         "parameters": [
           {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
             "name": "body",
             "in": "body",
             "required": true,
@@ -1249,49 +2021,11 @@
               "properties": {
                 "consultantId": {
                   "type": "string",
-                  "description": "The ID of the consultant",
-                  "required": true
-                },
-                "availabilityTimes": {
-                  "type": "array",
-                  "description": "The availability times of the consultant",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "date": {
-                        "type": "string",
-                        "format": "date",
-                        "description": "The date of the availability",
-                        "required": true
-                      },
-                      "times": {
-                        "type": "array",
-                        "description": "The times of the availability",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "startTime": {
-                              "type": "string",
-                              "format": "date-time",
-                              "description": "The start time of the availability",
-                              "required": true
-                            },
-                            "endTime": {
-                              "type": "string",
-                              "format": "date-time",
-                              "description": "The end time of the availability",
-                              "required": true
-                            }
-                          },
-                          "required": ["startTime", "endTime"]
-                        }
-                      }
-                    },
-                    "required": ["date", "times"]
-                  }
+                  "required": true,
+                  "unique": true
                 }
               },
-              "required": ["consultantId", "availabilityTimes"]
+              "required": ["consultantId"]
             }
           }
         ],
@@ -1315,6 +2049,13 @@
         "description": "Get availability",
         "parameters": [
           {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
@@ -1334,6 +2075,13 @@
         "description": "Update availability",
         "parameters": [
           {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
             "name": "id",
             "in": "path",
             "required": true,
@@ -1347,49 +2095,13 @@
             "schema": {
               "type": "object",
               "properties": {
-                "consultantId": {
-                  "type": "string",
-                  "description": "The ID of the consultant",
-                  "required": true
-                },
-                "availabilityTimes": {
+                "availabilityDays": {
                   "type": "array",
-                  "description": "The availability times of the consultant",
                   "items": {
-                    "type": "object",
-                    "properties": {
-                      "date": {
-                        "type": "string",
-                        "format": "date",
-                        "description": "The date of the availability",
-                        "required": true
-                      },
-                      "times": {
-                        "type": "array",
-                        "description": "The times of the availability",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "startTime": {
-                              "type": "string",
-                              "format": "date-time",
-                              "description": "The start time of the availability",
-                              "required": true
-                            },
-                            "endTime": {
-                              "type": "string",
-                              "format": "date-time",
-                              "description": "The end time of the availability",
-                              "required": true
-                            }
-                          },
-                          "required": ["startTime", "endTime"]
-                        }
-                      }
-                    }
-                  }
-                }
-              }
+                    "type": "string"
+                  }}
+              },
+              "required": ["availabilityDays"]
             }
           }
         ],
@@ -1398,7 +2110,7 @@
             "description": "Availability updated successfully"
           },
           "400": {
-            "description": "Bad Request: Invalid availability"
+            "description": "Bad Request: Invalid availability ID"
           },
           "500": {
             "description": "Internal server error"
@@ -1410,6 +2122,13 @@
         "summary": "Delete availability",
         "description": "Delete availability",
         "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
           {
             "name": "id",
             "in": "path",
@@ -1428,11 +2147,342 @@
         }
       }
     },
+    "/api/v1/availabilityDays": {
+      "get": {
+        "tags": ["AvailabilityDays"],
+        "summary": "Get availability days",
+        "description": "Get availability days",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": ["AvailabilityDays"],
+        "summary": "Create availability day",
+        "description": "Create availability day",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "availabilityId": {
+                  "type": "string",
+                  "description": "The ID of the availability",
+                  "required": true
+                },
+                "date": {
+                  "type": "string",
+                  "defult": "2022-01-01",
+                  "format": "date",
+                  "description": "The date of the availability day",
+                  "required": true
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Availability day created successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid availability day"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/availabilityDays/{id}": {
+      "get": {
+        "tags": ["AvailabilityDays"],
+        "summary": "Get availability day",
+        "description": "Get availability day",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": ["AvailabilityDays"],
+        "summary": "Update availability day",
+        "description": "Update availability day",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the availability day"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "type": "Date",
+                  "required": true
+                },
+                "availabilityTimes": {
+                  "type": "array",
+                  "items": {
+                    "type": "ObjectId",
+                    "ref": "AvailabilityTimes"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Availability day updated successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid availability day"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["AvailabilityDays"],
+        "summary": "Delete availability day",
+        "description": "Delete availability day",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the availability day"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Availability day deleted successfully"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/availabilityTimes": {
+      "get": {
+        "tags": ["AvailabilityTimes"],
+        "summary": "Get availability times",
+        "description": "Get availability times",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": ["AvailabilityTimes"],
+        "summary": "Create availability time",
+        "description": "Create availability time",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "availabilityDaysId": {
+                  "type": "string",
+                  "description": "The ID of the availability day",
+                  "required": true
+                },
+                "startTime": {
+                  "type": "string",
+                  "description": "The start time of the availability time",
+                  "required": true
+                },
+                "endTime": {
+                  "type": "string",
+                  "description": "The end time of the availability time",
+                  "required": true
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Availability time created successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid availability time"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/availabilityTimes/{id}": {
+      "get": {
+        "tags": ["AvailabilityTimes"],
+        "summary": "Get availability time",
+        "description": "Get availability time",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the availability time"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": ["AvailabilityTimes"],
+        "summary": "Update availability time",
+        "description": "Update availability time",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the availability time"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "startTime": {
+                  "type": "string",
+                  "description": "The start time of the availability time",
+                  "required": true
+                },
+                "endTime": {
+                  "type": "string",
+                  "description": "The end time of the availability time",
+                  "required": true
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Availability time updated successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid availability time"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/api/v1/bookings": {
       "get": {
         "tags": ["Bookings"],
         "summary": "Get booking",
         "description": "Get booking",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -1444,6 +2494,13 @@
         "summary": "Create booking",
         "description": "Create booking",
         "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
           {
             "name": "body",
             "in": "body",
@@ -1501,33 +2558,6 @@
             "description": "Internal server error"
           }
         }
-      },
-      "delete": {
-        "tags": ["Bookings"],
-        "summary": "Delete many booking",
-        "description": "Delete many booking",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "description": "The ID of the booking"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Booking deleted successfully"
-          },
-          "500": {
-            "description": "Internal server error"
-          }
-        }
       }
     },
     "/api/v1/bookings/{id}": {
@@ -1536,6 +2566,13 @@
         "summary": "Get booking",
         "description": "Get booking",
         "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
           {
             "name": "id",
             "in": "path",
@@ -1555,6 +2592,13 @@
         "summary": "Update booking",
         "description": "Update booking",
         "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
           {
             "name": "id",
             "in": "path",
@@ -1615,6 +2659,13 @@
         "summary": "Cancel booking",
         "description": "Cancel booking",
         "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
           {
             "name": "id",
             "in": "path",

@@ -1,41 +1,19 @@
 import { model, ObjectId, Schema } from "mongoose";
+import availabilityTimes from "./AvailabilityTimesModel";
 
-interface IAvailability {
-  consultantId: ObjectId;
-  availabilityTimes: {
-    date: Date;
-    times: {
-      startTime: Date;
-      endTime: Date;
-    }[];
-  }
-}
-
-const AvailabilitySchema = new Schema<IAvailability>(
+const AvailabilitySchema = new Schema(
   {
     consultantId: {
       type: Schema.Types.ObjectId,
       ref: "Consultant",
       required: true,
+      unique: true,
     },
-    availabilityTimes: [
+    availabilityDays: [
       {
-        date: {
-          type: Date,
-          required: true,
-        },
-        times: [
-          {
-            startTime: {
-              type: Date,
-              required: true,
-            },
-            endTime: {
-              type: Date,
-              required: true,
-            },
-          },
-        ],
+        // إضافة الحقل هنا
+        type: Schema.Types.ObjectId,
+        ref: "AvailabilityDays",
       },
     ],
   },
@@ -44,6 +22,6 @@ const AvailabilitySchema = new Schema<IAvailability>(
   }
 );
 
-const Availability = model<IAvailability>("Availability", AvailabilitySchema);
+const Availability = model("Availability", AvailabilitySchema);
 
 export default Availability;

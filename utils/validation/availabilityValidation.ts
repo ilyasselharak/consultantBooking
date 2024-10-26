@@ -9,62 +9,20 @@ const createAvailabilityValidation = [
     .withMessage("Consultant ID is required")
     .isMongoId()
     .withMessage("Invalid consultant ID"),
-  body("availabilityTimes")
+  body("availabilityDays")
     .exists()
     .notEmpty()
-    .withMessage("Availability times is required")
+    .withMessage("Availability days are required")
     .isArray()
-    .withMessage("Availability times must be an array"),
-  body("availabilityTimes.*.date")
-    .exists()
-    .notEmpty()
-    .withMessage("Date is required")
-    .isDate()
-    .withMessage("Invalid date"),
-  body("availabilityTimes.*.times")
-    .exists()
-    .notEmpty()
-    .withMessage("Times is required")
-    .isArray()
-    .withMessage("Times must be an array"),
-  body("availabilityTimes.*.times.*.startTime")
-    .exists()
-    .notEmpty()
-    .withMessage("Start time is required")
-    .isISO8601()
-    .withMessage("Invalid start time"),
-  body("availabilityTimes.*.times.*.endTime")
-    .exists()
-    .notEmpty()
-    .withMessage("End time is required")
-    .isISO8601()
-    .withMessage("Invalid end time"),
-  validatorMiddleware,
-];
-
-const updateAvailabilityValidation = [
-  param("id")
-    .exists()
-    .notEmpty()
-    .withMessage("Availability ID is required")
-    .isMongoId()
-    .withMessage("Invalid availability ID"),
-  body("availabilityTimes")
-    .exists()
-    .notEmpty()
-    .withMessage("Availability times is required")
-    .isArray()
-    .withMessage("Availability times must be an array"),
-  body("availabilityTimes.*.date").isDate().withMessage("Invalid date"),
-  body("availabilityTimes.*.times")
-    .isArray()
-    .withMessage("Times must be an array"),
-  body("availabilityTimes.*.times.*.startTime")
-    .isDate()
-    .withMessage("Invalid start time"),
-  body("availabilityTimes.*.times.*.endTime")
-    .isDate()
-    .withMessage("Invalid end time"),
+    .withMessage("Availability days must be an array")
+    .custom((value, { req }) => {
+      for (const id of value) {
+        if (!Types.ObjectId.isValid(id)) {
+          throw new Error("Invalid availability day ID");
+        }
+      }
+      return true;
+    }),
   validatorMiddleware,
 ];
 
@@ -78,6 +36,31 @@ const getAvailabilityByIdValidation = [
   validatorMiddleware,
 ];
 
+
+
+const updateAvailabilityValidation = [
+  param("id")
+    .exists()
+    .notEmpty()
+    .withMessage("Availability ID is required")
+    .isMongoId()
+    .withMessage("Invalid availability ID"),
+  body("availabilityDays")
+    .exists()
+    .notEmpty()
+    .withMessage("Availability days are required")
+    .isArray()
+    .withMessage("Availability days must be an array")
+    .custom((value, { req }) => {
+      for (const id of value) {
+        if (!Types.ObjectId.isValid(id)) {
+          throw new Error("Invalid availability day ID");
+        }
+      }
+      return true;
+    }),
+  validatorMiddleware
+]
 const deleteAvailabilityByIdValidation = [
   param("id")
     .exists()
@@ -111,8 +94,8 @@ const deleteAvailabilitiesValidation = [
 
 export {
   createAvailabilityValidation,
-  updateAvailabilityValidation,
   getAvailabilityByIdValidation,
+  updateAvailabilityValidation,
   deleteAvailabilityByIdValidation,
   deleteAvailabilitiesValidation,
 };

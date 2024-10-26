@@ -2,15 +2,32 @@ import { NextFunction, Request, Response } from "express";
 import { Model as MongooseModel } from "mongoose";
 import asyncHandler from "express-async-handler";
 import { ApiError } from "../../utils/APIError";
+import Availability from "../models/AvailabilityModel";
+import AvailabilityDays from "../models/AvailabilityDaysModel";
 
 const createOne = (Model: MongooseModel<any>) =>
   asyncHandler(async (req: Request, res: Response) => {
-    const document = await Model.create(req.body);
+    if (req.originalUrl.split("/").includes("availabilityDays")) {
+      const document = await Model.create(req.body);
+      await Availability.findByIdAndUpdate(req.body.availabilityId, {
+        $push: { availabilityDays: document._id },
+      });
+      res.status(201).json(document);
+    } else if (req.originalUrl.split("/").includes("availabilityTimes")) {
+      const document = await Model.create(req.body);
+      await AvailabilityDays.findByIdAndUpdate(req.body.availabilityDaysId, {
+        $push: { availabilityTimes: document._id },
+      });
+      res.status(201).json(document);
+    } else {
+      console.log("document else", req.body);
+      const document = await Model.create(req.body);
 
-    res.status(201).json(document);
+      res.status(201).json(document);
+    }
   });
 
-const getMany = (Model: MongooseModel<any>) =>
+const getMany = (Model: MongooseModel<any>, fields = {}) =>
   asyncHandler(async (req: Request, res: Response) => {
     const documents = await Model.find();
     res.status(200).json(documents);

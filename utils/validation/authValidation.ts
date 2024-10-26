@@ -19,6 +19,22 @@ const registerValidation = [
     .withMessage("Password is required")
     .isLength({ min: 8, max: 20 })
     .withMessage("Password must be between 8 and 20 characters"),
+  body("role")
+    .exists()
+    .notEmpty()
+    .withMessage("Role is required")
+    .isIn(["Customer", "Consultant"])
+    .not()
+    .withMessage("Invalid role"),
+  // .custom((value) => {
+  //   if (
+  //     value === "Consultant" ||
+  //     value === "Customer"
+  //   ) {
+  //     return true;
+  //   }
+  //   throw new Error("Invalid role");
+  // }),
   body("image").custom((value) => {
     if (
       typeof value !== "object" ||
