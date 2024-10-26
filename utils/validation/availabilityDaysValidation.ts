@@ -1,7 +1,7 @@
 import { body, param } from "express-validator";
 import validatorMiddleware from "./../../src/middlewares/validationMiddleware";
 import { Types } from "mongoose";
-
+import AvailabilityDays from "../../src/models/AvailabilityDaysModel";
 
 const createAvailabilityDaysValidation = [
   body("availabilityId")
@@ -15,7 +15,16 @@ const createAvailabilityDaysValidation = [
     .notEmpty()
     .withMessage("Date is required")
     .isISO8601()
-    .withMessage("Invalid date format"),
+    .withMessage("Invalid date format")
+    .custom(async (value, { req }) => {
+      const existingDate = await AvailabilityDays.findOne({ date: value });
+      console.log(existingDate);
+      if (existingDate) {
+        throw new Error("Date already exists");
+      }
+
+      return true;
+    }),
   body("availabilityTimes")
     .optional()
     .isArray()
