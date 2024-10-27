@@ -23,7 +23,7 @@ const createOne = (Model: MongooseModel<any>) =>
     } else {
       console.log("document else", req.body);
       const document = await Model.create(req.body);
-      updateRoleBasedOnModel(req.body, Model.modelName);
+      updateRoleBasedOnModel(req.body, Model.modelName, "create");
       res.status(201).json(document);
     }
   });
@@ -75,7 +75,7 @@ const deleteOne = (Model: MongooseModel<any>) =>
       );
     }
 
-    updateRoleBasedOnModel(req.body, Model.modelName);
+    updateRoleBasedOnModel(req.params, Model.modelName, "delete");
     res.status(200).json({ message: "Document deleted successfully" });
   });
 
