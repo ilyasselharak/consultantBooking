@@ -1834,7 +1834,9 @@
                 "CIN",
                 "businessName",
                 "address",
-                "phoneNumber"
+                "phoneNumber",
+                "timeUnit",
+                "price"
               ]
             }
           }

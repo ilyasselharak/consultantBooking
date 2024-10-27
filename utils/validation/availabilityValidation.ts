@@ -11,8 +11,9 @@ const createAvailabilityValidation = [
     .withMessage("Invalid consultant ID"),
   body("availabilityDays")
     .exists()
-    .notEmpty()
-    .withMessage("Availability days are required")
+    .optional()
+    // .notEmpty()
+    // .withMessage("Availability days are required")
     .isArray()
     .withMessage("Availability days must be an array")
     .custom((value, { req }) => {
