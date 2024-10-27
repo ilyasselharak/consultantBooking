@@ -29,4 +29,6 @@ router
   .put(updateAvailabilityValidation, updateAvailability)
   .delete(deleteAvailabilityByIdValidation, deleteAvailability);
 
+  router.route("/consultantId").get()
+
 export default router;

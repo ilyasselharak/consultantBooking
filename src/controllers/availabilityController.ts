@@ -10,28 +10,16 @@ import {
   update,
 } from "./handlersFactory";
 
+
+
+
+
 const createAvailability = createOne(Availability);
 
 // @desc    Get availabilities
 // @route   GET /api/v1/availabilities
 // @access  Private
-const getAvailabilities = async (req: Request, res: Response) => {
-  try {
-    const availabilities = await Availability.find().populate({
-      path: "availabilityDays",
-      populate: {
-        path: "availabilityTimes",
-      },
-    });
-
-    res.status(200).json({
-      status: "success",
-      data: availabilities,
-    });
-  } catch (error: any) {
-    res.status(500).json({ status: "error", message: error.message });
-  }
-};
+const getAvailabilities = getMany(Availability, {});
 
 
 // @desc    Get availability

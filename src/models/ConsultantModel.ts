@@ -1,4 +1,9 @@
 import { Schema, model } from "mongoose";
+import User from "./UserModel";
+import Availability from "./AvailabilityModel";
+import AvailabilityDays from "./AvailabilityDaysModel";
+import AvailabilityTimes from "./AvailabilityTimesModel";
+import Wallet from "./WalletModel";
 
 const consultantSchema = new Schema(
   {
@@ -7,15 +12,17 @@ const consultantSchema = new Schema(
       ref: "User",
       required: true,
     },
+    bio: {
+      type: String,
+      required: true,
+      maxLength: 250,
+      minLength: 25,
+    },
+    IBAN: {
+      type: String,
+      required: true,
+    },
     expertise: {
-      type: String,
-      required: true,
-    },
-    ICE: {
-      type: String,
-      required: true,
-    },
-    professionalId: {
       type: String,
       required: true,
     },
@@ -28,7 +35,11 @@ const consultantSchema = new Schema(
       type: String,
       required: true,
     },
-    businessName: {
+    ICE: {
+      type: String,
+      required: true,
+    },
+    professionalId: {
       type: String,
       required: true,
     },
@@ -46,11 +57,19 @@ const consultantSchema = new Schema(
         required: true,
       },
     },
+    businessName: {
+      type: String,
+      required: true,
+    },
     phoneNumber: {
       type: String,
       required: true,
     },
-    priceHour: {
+    timeUnit: {
+      type: Number,
+      default: 60,
+    },
+    price: {
       type: Number,
       default: 0,
     },

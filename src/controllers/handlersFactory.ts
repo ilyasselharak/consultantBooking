@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { Model as MongooseModel } from "mongoose";
+import mongoose, { Model as MongooseModel } from "mongoose";
 import asyncHandler from "express-async-handler";
 import { ApiError } from "../../utils/APIError";
 import Availability from "../models/AvailabilityModel";
 import AvailabilityDays from "../models/AvailabilityDaysModel";
+import deleteModelRelations from "../middlewares/relationHandler";
 
 const createOne = (Model: MongooseModel<any>) =>
   asyncHandler(async (req: Request, res: Response) => {
@@ -61,6 +62,11 @@ const update = (Model: MongooseModel<any>) =>
 
 const deleteOne = (Model: MongooseModel<any>) =>
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    
+    await deleteModelRelations(
+      Model?.modelName,
+      new mongoose.Types.ObjectId(req.params.id)
+    );
     const document = await Model.findByIdAndDelete(req.params.id);
 
     if (!document) {

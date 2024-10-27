@@ -1,4 +1,6 @@
 import User from "../models/UserModel";
+import asyncHandler from "express-async-handler";
+import { NextFunction, Request, Response } from "express";
 import {
   createOne,
   deleteMany,
@@ -7,7 +9,10 @@ import {
   getMany,
   update,
 } from "./handlersFactory";
-
+import Consultant from "../models/ConsultantModel";
+import Availability from "../models/AvailabilityModel";
+import AvailabilityDays from "../models/AvailabilityDaysModel";
+import AvailabilityTimes from "../models/AvailabilityTimesModel";
 
 // @desc    Create user
 // @route   POST /api/v1/users
@@ -29,11 +34,11 @@ const getUserById = getById(User);
 // @access  Private
 const updateUser = update(User);
 
-
 // @desc    Delete user
 // @route   DELETE /api/v1/users/:id
 // @access  Private
 const deleteUser = deleteOne(User);
+
 
 
 // @desc    Delete many users

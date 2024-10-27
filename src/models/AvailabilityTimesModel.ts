@@ -24,6 +24,6 @@ const availabilityTimesSchema = new Schema(
     }
 );
 
-const availabilityTimes = model('AvailabilityTimes', availabilityTimesSchema);
+const AvailabilityTimes = model('AvailabilityTimes', availabilityTimesSchema);
 
-export default availabilityTimes
+export default AvailabilityTimes
