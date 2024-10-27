@@ -1,6 +1,7 @@
 import Permission from "../models/PermissionModel"; 
 import mongoose, { Document, Model } from "mongoose";
 import User from "../models/UserModel";
+import Staff from "../models/StaffModel";
 
 // Define a type for related models to be used with Mongoose
 interface IModelRelations {
@@ -86,19 +87,42 @@ async function deleteManyModelRelations(
 
 
 
+// دالة لتحديث الدور بناءً على العملية
 const updateRoleBasedOnModel = async (
   body: any,
-  modelName: string
+  modelName: string,
+  action: "create" | "delete" // إضافة نوع للعملية
 ) => {
-  if (modelName === "User") {
-    const user = await User.findById(body.userId);
+  let userId: mongoose.Types.ObjectId | undefined;
+
+  // التحقق من وجود userId في body أو params
+  if (body.userId) {
+    userId = body.userId;
+  } else if (body.params && body.params.id) {
+    userId = body.params.id;
+  }
+
+  if (userId) {
+    let user;
+
+    // تحديد النموذج بناءً على modelName
+    if (modelName === "User") {
+      user = await User.findById(userId);
+    } else if (modelName === "Staff") {
+      user = await Staff.findById(userId);
+    }
+
     if (user) {
-      user.role = body.role;
+      // تغيير الدور بناءً على العملية
+      if (action === "create" && modelName === "Consultant") {
+        user.role = "Consultant"; // تعيينه كمستشار عند الإنشاء
+      } else if (action === "delete") {
+        user.role = "Customer"; // تعيينه كعميل عند الحذف
+      }
       await user.save();
     }
   }
 };
-
 export {
   deleteModelRelations,
   updateRoleBasedOnModel,

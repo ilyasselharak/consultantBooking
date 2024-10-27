@@ -911,6 +911,43 @@
             }
           }
         }
+      },
+      "delete": {
+        "tags": ["Users"],
+        "summary": "Delete many user",
+        "description": "Delete many user",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "The ID of the user"
+                  }
+                }
+              },
+              "required": ["ids"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User deleted successfully"
+          }
+        }
       }
     },
     "/api/v1/users/{id}": {
@@ -1819,7 +1856,7 @@
                 "timeUnit": {
                   "type": "number",
                   "required": true
-                }, 
+                },
                 "price": {
                   "type": "number",
                   "required": true
@@ -2121,7 +2158,8 @@
                   "type": "array",
                   "items": {
                     "type": "string"
-                  }}
+                  }
+                }
               },
               "required": ["availabilityDays"]
             }
