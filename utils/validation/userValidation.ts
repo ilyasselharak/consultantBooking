@@ -29,10 +29,12 @@ const createUserValidation = [
     .withMessage("Confirm password is required")
     .isLength({ min: 8, max: 20 })
     .withMessage("Confirm password must be between 8 and 20 characters")
-    .custom((value, { req }) => {
+    .custom(async(value, { req }) => {
       if (value !== req.body.password) {
         throw new Error("Passwords do not match");
       }
+
+      req.body.password = await bcrypt.hash(req.body.password, 12);
       return true;
     }),
   body("image")
