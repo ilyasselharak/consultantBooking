@@ -97,6 +97,7 @@ const resetPasswordValidation = [
     .notEmpty()
     .withMessage("User ID is required")
     .isMongoId()
+    .custom(async (value) => !!(await validateExists(User, value)))
     .withMessage("Invalid user ID"),
   param("token").exists().notEmpty().withMessage("Token is required"),
   body("password")
