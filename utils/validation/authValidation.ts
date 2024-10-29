@@ -1,6 +1,7 @@
 import { body, param } from "express-validator";
 import validatorMiddleware from "../../src/middlewares/validationMiddleware";
 import User from "../../src/models/UserModel";
+import { validateExists } from "./commonValidation";
 
 const registerValidation = [
   body("fullName")
@@ -74,7 +75,7 @@ const verifiedUserValidation = [
     .notEmpty()
     .withMessage("User ID is required")
     .isMongoId()
-    .custom(async value => !!(await User.findById( value)))
+    .custom(async (value) => !!(await validateExists(User, value)))
     .withMessage("Invalid user ID"),
   body("token").exists().notEmpty().withMessage("Token is required"),
   validatorMiddleware,

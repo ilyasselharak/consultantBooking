@@ -81,7 +81,7 @@ const login = asyncHandler(
         const verifyEmailHtml = template(
           token,
           moment(1000 * 60).fromNow(),
-          "Thank you for registering with our website. Your verification code is"
+          "Thank you for registering with our website."
         );
 
         sendEmail(verifyEmailHtml, "Verify your email", email);
@@ -112,12 +112,10 @@ const login = asyncHandler(
           expiresIn: "1h",
         }
       );
-      res
-        .status(200)
-        .json({
-          message: "User logged in successfully",
-          token,
-        });
+      res.status(200).json({
+        message: "User logged in successfully",
+        token,
+      });
     } catch (error) {
       return next(new ApiError(`Error logging in user: ${error}`, 500));
     }
@@ -139,12 +137,10 @@ const getAccount = asyncHandler(
         const notExist = await Consultant.findOne({ userId: req.user.id });
 
         if (!notExist) {
-          res
-            .status(200)
-            .json({
-              message: "Consultant is not exist yet, please create it",
-              userId: req.user.id,
-            });
+          res.status(200).json({
+            message: "Consultant is not exist yet, please create it",
+            userId: req.user.id,
+          });
           return;
         }
         consultant = notExist;
