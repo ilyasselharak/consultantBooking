@@ -6,6 +6,7 @@ import crypto from "crypto";
 import { sendEmail } from "./../../utils/sendEmail";
 import { ApiError } from "../../utils/APIError";
 import jwt from "jsonwebtoken";
+import Consultant from "../models/ConsultantModel";
 
 // @desc    Register user
 // @route   POST /api/v1/auth/register
@@ -77,7 +78,7 @@ const register = asyncHandler(
 
       await newUser.save();
 
-      res.status(201).json({ message: "User signed in successfully" });
+      res.status(201).json({ message: "User signed in successfully", userId: newUser._id });
     } catch (error) {
       return next(new ApiError(`Error registering user: ${error}`, 500));
     }
@@ -162,6 +163,13 @@ const login = asyncHandler(
             400
           )
         );
+      }
+      if (user.role === "Consultant") {
+        const notExist = await Consultant.findOne({ userId: user._id });
+        if (!notExist) {
+          res.status(200).json({ message: "User logged in successfully", userId: user._id });
+          return;
+        }
       }
       const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET!, {
         expiresIn: "1h",
