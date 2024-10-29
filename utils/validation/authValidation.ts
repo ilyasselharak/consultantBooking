@@ -1,43 +1,51 @@
-import { body, param } from 'express-validator';
-import validatorMiddleware from '../../src/middlewares/validationMiddleware';
+import { body, param } from "express-validator";
+import validatorMiddleware from "../../src/middlewares/validationMiddleware";
+import User from "../../src/models/UserModel";
 
 const registerValidation = [
-  body('fullName')
+  body("fullName")
     .exists()
     .notEmpty()
-    .withMessage('Full name is required')
+    .withMessage("Full name is required")
     .isLength({ min: 3 })
-    .withMessage('Too short fullname'),
-  body('email')
+    .withMessage("Too short fullname"),
+  body("email")
     .exists()
     .notEmpty()
-    .withMessage('Email is required')
+    .withMessage("Email is required")
     .isEmail()
-    .withMessage('Invalid email'),
-  body('password')
+    .withMessage("Invalid email")
+    .custom(async (value) => {
+      const user = await User.findOne({ email: value });
+      if (user) {
+        throw new Error("Email already used");
+      }
+      return true;
+    }),
+  body("password")
     .exists()
     .notEmpty()
-    .withMessage('Password is required')
+    .withMessage("Password is required")
     .isLength({ min: 8, max: 20 })
-    .withMessage('Password must be between 8 and 20 characters'),
-  body('role')
+    .withMessage("Password must be between 8 and 20 characters"),
+  body("role")
     .exists()
     .notEmpty()
-    .withMessage('Role is required')
-    .isIn(['Customer', 'Consultant'])
+    .withMessage("Role is required")
+    .isIn(["Customer", "Consultant"])
     .not()
-    .withMessage('Invalid role'),
+    .withMessage("Invalid role"),
 
-  body('image')
+  body("image")
     .isObject()
-    .custom(value => {
+    .custom((value) => {
       if (
-        (value.url !== null && typeof value.url !== 'string') ||
-        (value.public_id !== null && typeof value.public_id !== 'string') ||
+        (value.url !== null && typeof value.url !== "string") ||
+        (value.public_id !== null && typeof value.public_id !== "string") ||
         (value.url !== null && value.public_id === null) ||
         (value.url !== null && value.public_id === null)
       ) {
-        throw new Error('Invalid image format');
+        throw new Error("Invalid image format");
       }
       return true;
     }),
@@ -45,65 +53,66 @@ const registerValidation = [
 ];
 
 const loginValidation = [
-  body('email')
+  body("email")
     .exists()
     .notEmpty()
-    .withMessage('Email is required')
+    .withMessage("Email is required")
     .isEmail()
-    .withMessage('Invalid email'),
-  body('password')
+    .withMessage("Invalid email"),
+  body("password")
     .exists()
     .notEmpty()
-    .withMessage('Password is required')
+    .withMessage("Password is required")
     .isLength({ min: 8, max: 20 })
-    .withMessage('Password must be between 8 and 20 characters'),
+    .withMessage("Password must be between 8 and 20 characters"),
   validatorMiddleware,
 ];
 
 const verifiedUserValidation = [
-  param('id')
+  param("id")
     .exists()
     .notEmpty()
-    .withMessage('User ID is required')
+    .withMessage("User ID is required")
     .isMongoId()
-    .withMessage('Invalid user ID'),
-  body('token').exists().notEmpty().withMessage('Token is required'),
+    .custom(async value => !!(await User.findById( value)))
+    .withMessage("Invalid user ID"),
+  body("token").exists().notEmpty().withMessage("Token is required"),
   validatorMiddleware,
 ];
 
 const forgotPasswordValidation = [
-  body('email')
+  body("email")
     .exists()
     .notEmpty()
-    .withMessage('Email is required')
+    .withMessage("Email is required")
     .isEmail()
-    .withMessage('Invalid email'),
+    .withMessage("Invalid email"),
   validatorMiddleware,
 ];
 
 const resetPasswordValidation = [
-  param('id')
+  param("id")
     .exists()
     .notEmpty()
-    .withMessage('User ID is required')
+    .withMessage("User ID is required")
     .isMongoId()
-    .withMessage('Invalid user ID'),
-  param('token').exists().notEmpty().withMessage('Token is required'),
-  body('password')
+    .withMessage("Invalid user ID"),
+  param("token").exists().notEmpty().withMessage("Token is required"),
+  body("password")
     .exists()
     .notEmpty()
-    .withMessage('Password is required')
+    .withMessage("Password is required")
     .isLength({ min: 8, max: 20 })
-    .withMessage('Password must be between 8 and 20 characters'),
-  body('confirmPassword')
+    .withMessage("Password must be between 8 and 20 characters"),
+  body("confirmPassword")
     .exists()
     .notEmpty()
-    .withMessage('Confirm password is required')
+    .withMessage("Confirm password is required")
     .isLength({ min: 8, max: 20 })
-    .withMessage('Confirm password must be between 8 and 20 characters')
+    .withMessage("Confirm password must be between 8 and 20 characters")
     .custom((value, { req }) => {
       if (value !== req.body.password) {
-        throw new Error('Passwords do not match');
+        throw new Error("Passwords do not match");
       }
       return true;
     }),
