@@ -911,43 +911,6 @@
             }
           }
         }
-      },
-      "delete": {
-        "tags": ["Users"],
-        "summary": "Delete many user",
-        "description": "Delete many user",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "required": true,
-            "type": "string",
-            "description": "Bearer token"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "ids": {
-                  "type": "array",
-                  "items": {
-                    "type": "string",
-                    "description": "The ID of the user"
-                  }
-                }
-              },
-              "required": ["ids"]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "User deleted successfully"
-          }
-        }
       }
     },
     "/api/v1/users/{id}": {
@@ -1317,7 +1280,7 @@
         }
       }
     },
-    "/api/v1/wallets": {
+    "/api/v1/wallts": {
       "get": {
         "tags": ["Wallets"],
         "summary": "Get all wallets",
@@ -1803,14 +1766,6 @@
                   "type": "string",
                   "required": true
                 },
-                "bio": {
-                  "type": "string",
-                  "required": true
-                },
-                "IBAN": {
-                  "type": "string",
-                  "required": true
-                },
                 "ICE": {
                   "type": "string",
                   "required": true
@@ -1853,13 +1808,9 @@
                   "type": "string",
                   "required": true
                 },
-                "timeUnit": {
+                "priceHour": {
                   "type": "number",
-                  "required": true
-                },
-                "price": {
-                  "type": "number",
-                  "required": true
+                  "default": 0
                 }
               },
               "required": [
@@ -1871,9 +1822,7 @@
                 "CIN",
                 "businessName",
                 "address",
-                "phoneNumber",
-                "timeUnit",
-                "price"
+                "phoneNumber"
               ]
             }
           }
@@ -1961,14 +1910,6 @@
                 "expertise": {
                   "type": "string",
                   "description": "The expertise of the consultancy"
-                },
-                "bio": {
-                  "type": "string",
-                  "description": "The bio of the consultancy"
-                },
-                "IBAN": {
-                  "type": "string",
-                  "description": "The IBAN of the consultancy"
                 },
                 "ICE": {
                   "type": "string",
@@ -2146,23 +2087,6 @@
             "required": true,
             "type": "string",
             "description": "The ID of the availability"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "availabilityDays": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              },
-              "required": ["availabilityDays"]
-            }
           }
         ],
         "responses": {
@@ -2324,13 +2248,6 @@
                 "date": {
                   "type": "Date",
                   "required": true
-                },
-                "availabilityTimes": {
-                  "type": "array",
-                  "items": {
-                    "type": "ObjectId",
-                    "ref": "AvailabilityTimes"
-                  }
                 }
               }
             }
@@ -2417,7 +2334,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "availabilityDaysId": {
+                "availabilityDayId": {
                   "type": "string",
                   "description": "The ID of the availability day",
                   "required": true
@@ -2527,35 +2444,6 @@
             "description": "Internal server error"
           }
         }
-      },
-      "delete": {
-        "tags": ["AvailabilityTimes"],
-        "summary": "Delete availability time",
-        "description": "Delete availability time",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "required": true,
-            "type": "string",
-            "description": "Bearer token"
-          },
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "description": "The ID of the availability time"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Availability time deleted successfully"
-          },
-          "500": {
-            "description": "Internal server error"
-          }
-        }
       }
     },
     "/api/v1/bookings": {
@@ -2607,32 +2495,25 @@
                   "description": "The ID of the consultant",
                   "required": true
                 },
-                "bookingTime": {
-                  "type": "object",
-                  "properties": {
-                    "date": {
-                      "type": "string",
-                      "format": "date",
-                      "description": "The date of the booking",
-                      "required": true
-                    },
-                    "startTime": {
-                      "type": "string",
-                      "format": "date-time",
-                      "description": "The start time of the booking",
-                      "required": true
-                    },
-                    "endTime": {
-                      "type": "string",
-                      "format": "date-time",
-                      "description": "The end time of the booking",
-                      "required": true
-                    }
-                  },
-                  "required": ["date", "startTime", "endTime"]
+                "date": {
+                  "type": "string",
+                  "format": "date",
+                  "description": "The date of the booking",
+                  "required": true
+                },
+                "startTime": {
+                  "type": "string",
+                  "format": "HH:mm",
+                  "description": "The start time of the booking",
+                  "required": true
+                },
+                "endTime": {
+                  "type": "string",
+                  "format": "HH:mm",
+                  "description": "The end time of the booking",
+                  "required": true
                 }
-              },
-              "required": ["userId", "consultantId", "bookingTime"]
+              }
             }
           }
         ],

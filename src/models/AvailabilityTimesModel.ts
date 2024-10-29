@@ -1,29 +1,26 @@
-import { model, Schema } from "mongoose";
-import AvailabilityDays from './AvailabilityDaysModel';
-
-
+import { model, Schema } from 'mongoose';
 
 const availabilityTimesSchema = new Schema(
-    {
-        availabilityDaysId: {
-            type: Schema.Types.ObjectId,
-            ref: 'AvailabilityDays',
-            required: true
-        },
-        startTime: {
-            type: String,
-            required: true
-        },
-        endTime: {
-            type: String,
-            required: true
-        }
+  {
+    availabilityDayId: {
+      type: Schema.Types.ObjectId,
+      ref: 'AvailabilityDays',
+      required: true,
     },
-    {
-        timestamps: true,
-    }
+    startTime: {
+      type: String,
+      required: true,
+    },
+    endTime: {
+      type: String,
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  },
 );
 
-const AvailabilityTimes = model('AvailabilityTimes', availabilityTimesSchema);
+const availabilityTimes = model('AvailabilityTimes', availabilityTimesSchema);
 
-export default AvailabilityTimes
+export default availabilityTimes;

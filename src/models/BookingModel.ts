@@ -1,15 +1,11 @@
-import { model, Schema, ObjectId } from "mongoose";
-
-
+import { model, Schema, ObjectId } from 'mongoose';
 
 interface IBooking {
   userId: ObjectId;
   consultantId: ObjectId;
-  bookingTime: {
-    date: Date;
-    startTime: Date;
-    endTime: Date;
-  };
+  date: Date;
+  startTime: Date;
+  endTime: Date;
   price: number;
   status: string;
 }
@@ -24,19 +20,18 @@ const bookingSchema = new Schema(
       type: String,
       required: true,
     },
-    bookingTime: {
-      date: {
-        type: Date,
-        required: true,
-      },
-      startTime: {
-        type: Date,
-        required: true,
-      },
-      endTime: {
-        type: Date,
-        required: true,
-      },
+    // 2024-10-24
+    date: {
+      type: Date,
+      required: true,
+    },
+    startTime: {
+      type: String,
+      required: true,
+    },
+    endTime: {
+      type: String,
+      required: true,
     },
     price: {
       type: Number,
@@ -44,16 +39,16 @@ const bookingSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "confirmed", "cancelled"],
-      default: "pending",
+      enum: ['pending', 'confirmed', 'cancelled'],
+      default: 'pending',
     },
+    // TODO: add new fields {statusUpdate, numberUpdate, howUpdate}
   },
   {
     timestamps: true,
-  }
+  },
 );
-
 
 const Booking = model('Booking', bookingSchema);
 
-export default Booking
+export default Booking;

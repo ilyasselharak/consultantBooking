@@ -1,26 +1,22 @@
-import { body, param } from "express-validator";
-import validatorMiddleware from "./../../src/middlewares/validationMiddleware";
-import { Types } from "mongoose";
+import { body, param } from 'express-validator';
+import validatorMiddleware from './../../src/middlewares/validationMiddleware';
+import { Types } from 'mongoose';
+import { validateExists } from './commonValidation';
+import Consultant from '../../src/models/ConsultantModel';
+import Availability from '../../src/models/AvailabilityModel';
 
 const createAvailabilityValidation = [
-  body("consultantId")
+  body('consultantId')
     .exists()
     .notEmpty()
-    .withMessage("Consultant ID is required")
+    .withMessage('Consultant ID is required')
     .isMongoId()
-    .withMessage("Invalid consultant ID"),
-  body("availabilityDays")
-    .exists()
-    .optional()
-    // .notEmpty()
-    // .withMessage("Availability days are required")
-    .isArray()
-    .withMessage("Availability days must be an array")
-    .custom((value, { req }) => {
-      for (const id of value) {
-        if (!Types.ObjectId.isValid(id)) {
-          throw new Error("Invalid availability day ID");
-        }
+    .custom(async value => await validateExists(Consultant, value))
+    .withMessage('Invalid consultant ID')
+    .custom(async value => {
+      const availability = await Availability.exists({ consultantId: value });
+      if (availability) {
+        throw new Error('This consultant already has an availability');
       }
       return true;
     }),
@@ -28,68 +24,47 @@ const createAvailabilityValidation = [
 ];
 
 const getAvailabilityByIdValidation = [
-  param("id")
+  param('id')
     .exists()
     .notEmpty()
-    .withMessage("Availability ID is required")
+    .withMessage('Availability ID is required')
     .isMongoId()
-    .withMessage("Invalid availability ID"),
+    .custom(async value => !!(await validateExists(Availability, value)))
+    .withMessage('Invalid availability ID'),
   validatorMiddleware,
 ];
 
-
-
 const updateAvailabilityValidation = [
-  param("id")
+  param('id')
     .exists()
     .notEmpty()
-    .withMessage("Availability ID is required")
+    .withMessage('Availability ID is required')
     .isMongoId()
-    .withMessage("Invalid availability ID"),
-  body("availabilityDays")
-    .exists()
-    .notEmpty()
-    .withMessage("Availability days are required")
-    .isArray()
-    .withMessage("Availability days must be an array")
-    .custom((value, { req }) => {
-      for (const id of value) {
-        if (!Types.ObjectId.isValid(id)) {
-          throw new Error("Invalid availability day ID");
-        }
-      }
-      return true;
-    }),
-  validatorMiddleware
-]
+    .custom(async value => !!(await validateExists(Availability, value)))
+    .withMessage('Invalid availability ID'),
+  validatorMiddleware,
+];
+
 const deleteAvailabilityByIdValidation = [
-  param("id")
+  param('id')
     .exists()
     .notEmpty()
-    .withMessage("Availability ID is required")
+    .withMessage('Availability ID is required')
     .isMongoId()
-    .withMessage("Invalid availability ID"),
+    .custom(async value => !!(await validateExists(Availability, value)))
+    .withMessage('Invalid availability ID'),
   validatorMiddleware,
 ];
 
 const deleteAvailabilitiesValidation = [
-  body("ids")
+  body('ids')
     .exists()
     .notEmpty()
-    .withMessage("Availability IDs are required")
+    .withMessage('Availability IDs are required')
     .isArray()
-    .withMessage("Availability IDs must be an array")
-    .custom((value, { req }) => {
-      if (!Array.isArray(value)) {
-        throw new Error("Availability IDs must be an array");
-      }
-      for (const id of value) {
-        if (!Types.ObjectId.isValid(id)) {
-          throw new Error("Invalid availability ID");
-        }
-      }
-      return true;
-    }),
+    .withMessage('Availability IDs must be an array')
+    .custom(value => !!value.every((id: string) => Types.ObjectId.isValid(id)))
+    .withMessage('Invalid availabilities IDs'),
   validatorMiddleware,
 ];
 

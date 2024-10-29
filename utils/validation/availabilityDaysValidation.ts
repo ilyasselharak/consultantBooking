@@ -1,85 +1,63 @@
-import { body, param } from "express-validator";
-import validatorMiddleware from "./../../src/middlewares/validationMiddleware";
-import { Types } from "mongoose";
-import AvailabilityDays from "../../src/models/AvailabilityDaysModel";
+import { body, param } from 'express-validator';
+import validatorMiddleware from './../../src/middlewares/validationMiddleware';
+import { Types } from 'mongoose';
+import Availability from '../../src/models/AvailabilityModel';
+import { validateExists } from './commonValidation';
+import AvailabilityDays from '../../src/models/AvailabilityDaysModel';
 
 const createAvailabilityDaysValidation = [
-  body("availabilityId")
+  body('availabilityId')
     .exists()
     .notEmpty()
-    .withMessage("Availability ID is required")
+    .withMessage('Availability ID is required')
     .isMongoId()
-    .withMessage("Invalid availability ID"),
-  body("date")
+    .custom(async value => !!(await validateExists(Availability, value)))
+    .withMessage('Invalid availability ID'),
+  body('date')
     .exists()
     .notEmpty()
-    .withMessage("Date is required")
-    .isISO8601()
-    .withMessage("Invalid date format")
-    .custom(async (value, { req }) => {
-      const existingDate = await AvailabilityDays.findOne({ date: value });
-      console.log(existingDate);
-      if (existingDate) {
-        throw new Error("Date already exists");
-      }
-
-      return true;
-    }),
-  body("availabilityTimes")
-    .optional()
-    .isArray()
-    .withMessage("Availability times must be an array")
-    .custom((value) =>
-      value.every((id: string) => Types.ObjectId.isValid(id))
-        ? true
-        : "Invalid availability time ID"
-    )
-    .withMessage("Invalid availability time ID"),
+    .withMessage('Date is required')
+    .isDate()
+    .withMessage('Invalid date format'),
   validatorMiddleware,
 ];
 
 const updateAvailabilityDaysValidation = [
-  param("id")
+  param('id')
     .exists()
     .notEmpty()
-    .withMessage("Availability day ID is required")
+    .withMessage('Availability day ID is required')
     .isMongoId()
-    .withMessage("Invalid availability day ID"),
-  body("date")
+    .custom(async value => !!(await validateExists(Availability, value)))
+    .withMessage('Invalid availability day ID'),
+  body('date')
     .exists()
     .notEmpty()
-    .withMessage("Date is required")
-    .isISO8601()
-    .withMessage("Invalid date format"),
-  body("availabilityTimes")
-    .optional()
-    .isArray()
-    .withMessage("Availability times must be an array")
-    .custom((value) =>
-      value.every((id: string) => Types.ObjectId.isValid(id))
-        ? true
-        : "Invalid availability time ID"
-    )
-    .withMessage("Invalid availability time ID"),
+    .withMessage('Date is required')
+    .isDate()
+    .withMessage('Invalid date format'),
   validatorMiddleware,
 ];
+
 const getAvailabilityDayByIdValidation = [
-  param("id")
+  param('id')
     .exists()
     .notEmpty()
-    .withMessage("Availability day ID is required")
+    .withMessage('Availability day ID is required')
     .isMongoId()
-    .withMessage("Invalid availability day ID"),
+    .custom(async value => !!(await validateExists(AvailabilityDays, value)))
+    .withMessage('Invalid availability day ID'),
   validatorMiddleware,
 ];
 
 const deleteAvailabilityDaysValidation = [
-  param("id")
+  param('id')
     .exists()
     .notEmpty()
-    .withMessage("Availability day ID is required")
+    .withMessage('Availability day ID is required')
     .isMongoId()
-    .withMessage("Invalid availability day ID"),
+    .custom(async value => !!(await validateExists(AvailabilityDays, value)))
+    .withMessage('Invalid availability day ID'),
   validatorMiddleware,
 ];
 

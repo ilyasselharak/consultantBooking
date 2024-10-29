@@ -1,74 +1,69 @@
-import { body, param } from "express-validator";
-import validatorMiddleware from "../../src/middlewares/validationMiddleware";
-import { Types } from "mongoose";
+import { body, param } from 'express-validator';
+import validatorMiddleware from '../../src/middlewares/validationMiddleware';
+import { Types } from 'mongoose';
+import { validateExists } from './commonValidation';
+import Consultant from '../../src/models/ConsultantModel';
 
 const createWalletValidation = [
-  body("consultantId")
+  body('consultantId')
     .exists()
     .notEmpty()
-    .withMessage("Consultant ID is required")
+    .withMessage('Consultant ID is required')
     .isMongoId()
-    .withMessage("Invalid consultant ID"),
-  body("balance")
+    .custom(async value => !!(await validateExists(Consultant, value)))
+    .withMessage('Invalid consultant ID'),
+  body('balance')
     .optional()
-    .isNumeric()
-    .withMessage("Balance must be a number")
-    .default(0),
+    .default(0)
+    .customSanitizer(() => 0),
   validatorMiddleware,
 ];
 
 const updateWalletValidation = [
-  param("id")
+  param('id')
     .exists()
     .notEmpty()
-    .withMessage("Wallet ID is required")
+    .withMessage('Wallet ID is required')
     .isMongoId()
-    .withMessage("Invalid wallet ID"),
-  body("balance")
-    .optional()
-    .isNumeric()
-    .withMessage("Balance must be a number"),
+    .withMessage('Invalid wallet ID'),
+  body('balance').optional().isNumeric().withMessage('Balance must be a number'),
   validatorMiddleware,
 ];
-
 
 const getWalletByIdValidation = [
-  param("id")
+  param('id')
     .exists()
     .notEmpty()
-    .withMessage("Wallet ID is required")
+    .withMessage('Wallet ID is required')
     .isMongoId()
-    .withMessage("Invalid wallet ID"),
-  validatorMiddleware,
-]
-
-
-
-const deleteWalletByIdValidation = [
-  param("id")
-    .exists()
-    .notEmpty()
-    .withMessage("Wallet ID is required")
-    .isMongoId()
-    .withMessage("Invalid wallet ID"),
+    .withMessage('Invalid wallet ID'),
   validatorMiddleware,
 ];
 
-
-const deleteWalletsValidation = [
-  body("ids")
+const deleteWalletByIdValidation = [
+  param('id')
     .exists()
     .notEmpty()
-    .withMessage("Wallet IDs are required")
+    .withMessage('Wallet ID is required')
+    .isMongoId()
+    .withMessage('Invalid wallet ID'),
+  validatorMiddleware,
+];
+
+const deleteWalletsValidation = [
+  body('ids')
+    .exists()
+    .notEmpty()
+    .withMessage('Wallet IDs are required')
     .isArray()
-    .withMessage("Wallet IDs must be an array")
+    .withMessage('Wallet IDs must be an array')
     .custom((value, { req }) => {
       if (!Array.isArray(value)) {
-        throw new Error("Wallet IDs must be an array");
+        throw new Error('Wallet IDs must be an array');
       }
       for (const id of value) {
         if (!Types.ObjectId.isValid(id)) {
-          throw new Error("Invalid wallet ID");
+          throw new Error('Invalid wallet ID');
         }
       }
       return true;
@@ -76,12 +71,10 @@ const deleteWalletsValidation = [
   validatorMiddleware,
 ];
 
-
-
 export {
   createWalletValidation,
   updateWalletValidation,
   getWalletByIdValidation,
   deleteWalletByIdValidation,
   deleteWalletsValidation,
-}
+};

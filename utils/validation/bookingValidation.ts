@@ -1,106 +1,164 @@
-import { body, param } from "express-validator";
-import validatorMiddleware from "../../src/middlewares/validationMiddleware";
+import { body, param } from 'express-validator';
+import validatorMiddleware from '../../src/middlewares/validationMiddleware';
+import Consultant from '../../src/models/ConsultantModel';
+import { isDateInFuture, isTimeInFuture, timeRegex, validateExists } from './commonValidation';
+import User from '../../src/models/UserModel';
+import { compareTime } from '../timeHelper';
+import Booking from '../../src/models/BookingModel';
+import { Types } from 'mongoose';
 
 const createBookingValidation = [
-  param("consultantId")
+  body('userId')
     .exists()
     .notEmpty()
-    .withMessage("Consultant ID is required")
+    .withMessage('User ID is required')
     .isMongoId()
-    .withMessage("Invalid consultant ID"),
-  body("date")
+    .custom(async value => !!(await validateExists(User, value)))
+    .withMessage('Invalid user ID'),
+  body('consultantId')
     .exists()
     .notEmpty()
-    .withMessage("Date is required")
-    .isISO8601()
-    .withMessage("Invalid date"),
-  body("times")
+    .withMessage('Consultant ID is required')
+    .isMongoId()
+    .custom(async value => !!(await validateExists(Consultant, value)))
+    .withMessage('Invalid consultant ID'),
+  body('date')
     .exists()
     .notEmpty()
-    .withMessage("Times is required")
-    .isArray()
-    .withMessage("Times must be an array"),
-  body("times.*.startTime")
+    .withMessage('Date is required')
+    .isDate()
+    .withMessage('Invalid date')
+    .custom(isDateInFuture)
+    .withMessage('Date is in the past'),
+
+  body('startTime')
     .exists()
     .notEmpty()
-    .withMessage("Start time is required")
-    .isISO8601()
-    .withMessage("Invalid start time"),
-  body("times.*.endTime")
+    .withMessage('Start time is required')
+    .matches(timeRegex)
+    .withMessage('Invalid start time format')
+    .custom(isTimeInFuture)
+    .withMessage('Start time is in the past'),
+
+  body('endTime')
     .exists()
     .notEmpty()
-    .withMessage("End time is required")
-    .isISO8601()
-    .withMessage("Invalid end time"),
+    .withMessage('End time is required')
+    .matches(timeRegex)
+    .withMessage('Invalid end time format')
+    .custom(isTimeInFuture)
+    .withMessage('Start time is in the past'),
+
+  body()
+    .custom(async value => {
+      const { _id, consultantId, userId, startTime, endTime } = value;
+      const overlapped = await Booking.exists({
+        consultantId,
+        $or: [
+          { $and: [{ startTime: { $lt: endTime } }, { endTime: { $gt: startTime } }] },
+          // case of existing timeSlots
+          { startTime, endTime },
+        ],
+      });
+      return !overlapped && compareTime(startTime, endTime);
+    })
+    .withMessage('Time already booked'),
+
+  // TODO : check if the consultant available on the fixed time
+
   validatorMiddleware,
 ];
 
-
-
 const updateBookingValidation = [
-  param("id")
+  param('id')
     .exists()
     .notEmpty()
-    .withMessage("Booking ID is required")
+    .withMessage('Booking ID is required')
     .isMongoId()
-    .withMessage("Invalid booking ID"),
-  body("date")
+    .custom(async value => !!(await validateExists(Booking, value)))
+    .withMessage('Invalid booking ID'),
+  body('date')
     .exists()
     .notEmpty()
-    .withMessage("Date is required")
-    .isISO8601()
-    .withMessage("Invalid date"),
-  body("times")
+    .withMessage('Date is required')
+    .isDate()
+    .withMessage('Invalid date')
+    .custom(isDateInFuture)
+    .withMessage('Date is in the past'),
+
+  body('startTime')
     .exists()
     .notEmpty()
-    .withMessage("Times is required")
-    .isArray()
-    .withMessage("Times must be an array"),
-    body("times.*.startTime")
+    .withMessage('Start time is required')
+    .matches(timeRegex)
+    .withMessage('Invalid start time format')
+    .custom(isTimeInFuture)
+    .withMessage('Start time is in the past'),
+
+  body('endTime')
     .exists()
     .notEmpty()
-    .withMessage("Start time is required")
-    .isISO8601()
-    .withMessage("Invalid start time"),
-  body("times.*.endTime")
-    .exists()
-    .notEmpty()
-    .withMessage("End time is required")
-    .isISO8601()
-    .withMessage("Invalid end time"),
+    .withMessage('End time is required')
+    .matches(timeRegex)
+    .withMessage('Invalid end time format')
+    .custom(isTimeInFuture)
+    .withMessage('Start time is in the past'),
+
+  body()
+    .custom(async value => {
+      const { _id, consultantId, userId, startTime, endTime } = value;
+      const overlapped = await Booking.exists({
+        _id: { $ne: _id },
+        consultantId,
+        $or: [
+          { $and: [{ startTime: { $lt: endTime } }, { endTime: { $gt: startTime } }] },
+          // case of existing timeSlots
+          { startTime, endTime },
+        ],
+      });
+      return !overlapped && compareTime(startTime, endTime);
+    })
+    .withMessage('Time already booked'),
+
+  // TODO : check if the consultant available on the fixed time
+
   validatorMiddleware,
 ];
 
 const getBookingByIdValidation = [
-  param("id")
+  param('id')
     .exists()
     .notEmpty()
-    .withMessage("Booking ID is required")
+    .withMessage('Booking ID is required')
     .isMongoId()
-    .withMessage("Invalid booking ID"),
+    .custom(async value => !!(await validateExists(Booking, value)))
+    .withMessage('Invalid booking ID'),
   validatorMiddleware,
 ];
 
 const deleteBookingByIdValidation = [
-  param("id")
+  param('id')
     .exists()
     .notEmpty()
-    .withMessage("Booking ID is required")
+    .withMessage('Booking ID is required')
     .isMongoId()
-    .withMessage("Invalid booking ID"),
+    .custom(async value => !!(await validateExists(Booking, value)))
+    .withMessage('Invalid booking ID'),
   validatorMiddleware,
 ];
 
 const deleteBookingsValidation = [
-  body("ids")
+  body('ids')
     .exists()
     .notEmpty()
-    .withMessage("Booking IDs are required")
+    .withMessage('Booking IDs are required')
     .isArray()
-    .withMessage("Booking IDs must be an array"),
+    .withMessage('Booking IDs must be an array')
+    .custom(value => value.every((id: string) => Types.ObjectId.isValid(id)))
+    .custom(value => value.every(async (id: string) => !!(await validateExists(Booking, id))))
+    .withMessage('Booking IDs should all exists'),
   validatorMiddleware,
 ];
-
 
 export {
   createBookingValidation,
@@ -108,4 +166,4 @@ export {
   getBookingByIdValidation,
   deleteBookingByIdValidation,
   deleteBookingsValidation,
-}
+};

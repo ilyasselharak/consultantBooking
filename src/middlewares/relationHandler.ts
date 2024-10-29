@@ -1,36 +1,67 @@
-import Permission from "../models/PermissionModel";
+
 import mongoose, { Document, Model } from "mongoose";
 import User from "../models/UserModel";
-import Staff from "../models/StaffModel";
-import Consultant from "../models/ConsultantModel";
 
 // Define a type for related models to be used with Mongoose
 interface IModelRelations {
-  [modelName: string]: {
+  [key: string]: Array<{
     relationField: string;
     relatedModel: string;
-  }[];
+    parentRelatedModel?: string;
+    parentField?: string;
+  }>;
 }
 
 // Define model relations configuration
 const modelRelations: IModelRelations = {
   User: [
-    { relationField: "userId", relatedModel: "Transaction" },
-    { relationField: "userId", relatedModel: "Ticket" },
-    { relationField: "userId", relatedModel: "Booking" },
+    { relationField: "userId", relatedModel: "Consultant", parentField: "" },
+    { relationField: "userId", relatedModel: "Transaction", parentField: "" },
+    { relationField: "userId", relatedModel: "Ticket", parentField: "" },
+    { relationField: "userId", relatedModel: "Booking", parentField: "" },
+    { relationField: "userId", relatedModel: "Wallet", parentField: "" },
   ],
   Consultant: [
-    { relationField: "consultantId", relatedModel: "Availability" },
-    { relationField: "consultantId", relatedModel: "Wallet" },
-    { relationField: "consultantId", relatedModel: "Booking" },
+    {
+      relationField: "consultantId",
+      relatedModel: "Availability",
+      parentField: "",
+    },
+    { relationField: "consultantId", relatedModel: "Wallet", parentField: "" },
+    { relationField: "consultantId", relatedModel: "Booking", parentField: "" },
   ],
   Availability: [
-    { relationField: "availabilityId", relatedModel: "AvailabilityDays" },
+    {
+      relationField: "availabilityId",
+      relatedModel: "AvailabilityDays",
+      parentRelatedModel: "Consultant",
+
+      parentField: "",
+    },
   ],
   AvailabilityDays: [
-    { relationField: "availabilityDaysId", relatedModel: "AvailabilityTimes" },
+    {
+      relationField: "availabilityDaysId",
+      relatedModel: "AvailabilityTimes",
+      parentRelatedModel: "Availability",
+      parentField: "availabilityDays",
+    },
   ],
-  Wallet: [{ relationField: "consultantId", relatedModel: "Transaction" }],
+  AvailabilityTimes: [
+    {
+      relationField: "",
+      relatedModel: "",
+      parentRelatedModel: "AvailabilityDays",
+      parentField: "availabilityTimes",
+    },
+  ],
+  ConsultantProfile: [],
+  ConsultantReview: [],
+  ConsultantReviewComment: [],
+
+  Permission: [],
+  Staff: [],
+  Wallet: [],
   Booking: [],
   Ticket: [],
   Transaction: [],
@@ -93,41 +124,72 @@ const updateRoleBasedOnModel = async (
   action: "create" | "delete" // إضافة نوع للعملية
 ) => {
   let id: mongoose.Types.ObjectId | undefined;
-
-  // التحقق من وجود userId في body أو params
   if (body.userId) {
     id = body.userId;
-  } else if (body.params && body.params.id) {
-    id = body.params.id;
-    const consultant = await Consultant.findById(id);
-
-    id = consultant?.userId;
+  } else {
+    id = new mongoose.Types.ObjectId(body.id);
   }
+
 
   if (id) {
     let user;
 
-    // تحديد النموذج بناءً على modelName
-    if (modelName === "User") {
+    if (modelName === "Consultant") {
       user = await User.findById(id);
     }
-    // else if (modelName === "Staff") {
-    //   user = await Staff.findById(userId);
-    // }
 
     if (user) {
       // تغيير الدور بناءً على العملية
       if (action === "create" && modelName === "Consultant") {
         user.role = "Consultant"; // تعيينه كمستشار عند الإنشاء
-      } else if (action === "delete") {
+        console.log("create",user);
+      } else if (action === "delete" && modelName === "Consultant") {
+
         user.role = "Customer"; // تعيينه كعميل عند الحذف
+        console.log("delete",user);
       }
       await user.save();
     }
   }
 };
+
+// const updateRelatedModels = async (document: any, modelName: string) => {
+//   try {
+//     const relations = modelRelations[modelName];
+//     if (!relations) {
+//       console.error(`No relations defined for model: ${modelName}`);
+//       return;
+//     }
+//     console.log(relations);
+
+//     for (const relation of relations) {
+//       if (relation.parentField && relation.parentField) {
+//         // الحصول على النموذج المرتبط
+//         const RelatedModel = mongoose.model(relation.relatedModel);
+//         // البحث عن الوثائق المرتبطة باستخدام parentField
+//         const relatedDocument = await RelatedModel.findOne({
+//           _id: document[relation.relationField].toString(),
+//         });
+
+//         console.log(relatedDocument);
+
+//         // تحديث الوثائق المرتبطة
+//         if (relation.parentField) {
+//           await RelatedModel.findByIdAndUpdate(relatedDocument._id, {
+//             $push: { [relation.parentField]: document._id },
+//           });
+//         }
+//       }
+//     }
+//   } catch (error: any) {
+//     console.error(`Error in updating related models: ${error.message}`);
+//     throw new Error(error?.message);
+//   }
+// };
+
 export {
   deleteModelRelations,
+  // updateRelatedModels,
   updateRoleBasedOnModel,
   deleteManyModelRelations,
 };
