@@ -17,7 +17,10 @@ const createTicket = createOne(Ticket);
 // @desc    Get tickets
 // @route   GET /api/v1/tickets
 // @access  Private
-const getTickets = getMany(Ticket, {});
+const getTickets = getMany(Ticket, {
+  path: "user",
+  model: "User",
+});
 
 // @desc    Get ticket
 // @route   GET /api/v1/tickets/:id

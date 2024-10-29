@@ -9,7 +9,10 @@ import {
 
 export const createPermission = createOne(Permission);
 
-export const getAllPermission = getMany(Permission, "-__v");
+export const getAllPermission = getMany(Permission, {
+  path: "staff",
+  model: "Staff",
+});
 
 export const getOnePermission = getById(Permission);
 

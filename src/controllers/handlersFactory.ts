@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import mongoose, { Model as MongooseModel } from "mongoose";
+import mongoose, { Model, Model as MongooseModel } from "mongoose";
 import asyncHandler from "express-async-handler";
 import { ApiError } from "../../utils/APIError";
 import {
@@ -8,6 +8,7 @@ import {
   updateRoleBasedOnModel,
   // updateRelatedModels,
 } from "../middlewares/relationHandler";
+
 
 const createOne = (Model: MongooseModel<any>) =>
   asyncHandler(async (req: Request, res: Response) => {
@@ -31,12 +32,30 @@ const createOne = (Model: MongooseModel<any>) =>
     res.status(201).json(document);
     // }
   });
-
-const getMany = (Model: MongooseModel<any>, fields = {}) =>
+  
+  
+ 
+interface PopulateOptions {
+  path: string;
+  select?: string | string[];
+  model?: string;
+  populate?: PopulateOptions;
+  match?: any;
+  options?: any;
+}
+  
+// جعل `populate` اختيارياً في الدالة
+const getMany = (Model: MongooseModel<any>, populate?: PopulateOptions) =>
   asyncHandler(async (req: Request, res: Response) => {
-    const documents = await Model.find();
+    // التحقق مما إذا كانت `populate` موجودة
+    const query = Model.find();
+    if (populate) {
+      query.populate(populate);
+    }
+    const documents = await query.exec();
     res.status(200).json(documents);
   });
+
 
 const getById = (Model: MongooseModel<any>) =>
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {

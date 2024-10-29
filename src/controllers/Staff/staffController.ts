@@ -9,7 +9,11 @@ import {
 
 export const createStaff = createOne(Staff);
 
-export const getAllStaff = getMany(Staff, "-__v -password");
+export const getAllStaff = getMany(Staff, {
+  path: "permissions",
+  model: "Permission",
+  select: "-__v"
+});
 
 export const getOneStaff = getById(Staff);
 

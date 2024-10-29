@@ -19,7 +19,7 @@ const createWallet = createOne(Wallet);
 // @desc    Get wallets
 // @route   GET /api/v1/wallets
 // @access  Private
-const getWallets = getMany(Wallet, {});
+const getWallets = getMany(Wallet);
 
 
 // @desc    Get wallet

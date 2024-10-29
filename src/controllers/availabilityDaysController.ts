@@ -16,7 +16,10 @@ const createAvailabilityDays = createOne(AvailabilityDays);
 // @desc    Get availabilities
 // @route   GET /api/v1/availabilities
 // @access  Private
-const getAvailabilitiesDays = getMany(AvailabilityDays, {});
+const getAvailabilitiesDays = getMany(AvailabilityDays, {
+      path: 'availabilityTimes',
+      model: 'AvailabilityTimes',
+});
 
 // @desc    Get AvailabilityDays
 // @route   GET /api/v1/availabilities/:id

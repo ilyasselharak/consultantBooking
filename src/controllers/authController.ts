@@ -167,14 +167,14 @@ const login = asyncHandler(
       if (user.role === "Consultant") {
         const notExist = await Consultant.findOne({ userId: user._id });
         if (!notExist) {
-          res.status(200).json({ message: "User logged in successfully", userId: user._id });
+          res.status(200).json({ message: "Consultant is not exist yet, please create it", userId: user._id });
           return;
         }
       }
       const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET!, {
         expiresIn: "1h",
       });
-      res.status(200).json({ message: "User logged in successfully", token });
+      res.status(200).json({ message: "User logged in successfully", token, role: user.role });
     } catch (error) {
       return next(new ApiError(`Error logging in user: ${error}`, 500));
     }

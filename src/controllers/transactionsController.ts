@@ -1,4 +1,5 @@
-import Wallet from "../models/WalletModel";
+
+import Transaction from "../models/TransactionModel";
 import {
   createOne,
   deleteMany,
@@ -11,36 +12,36 @@ import {
 // @desc    Create transaction
 // @route   POST /api/v1/transactions
 // @access  Private
-const createTransaction = createOne(Wallet);
+const createTransaction = createOne(Transaction);
 
 
 // @desc    Get transactions
 // @route   GET /api/v1/transactions
 // @access  Private
-const getTransactions = getMany(Wallet, {});
+const getTransactions = getMany(Transaction);
 
 // @desc    Get transaction
 // @route   GET /api/v1/transactions/:id
 // @access  Private
-const getTransactionById = getById(Wallet,);
+const getTransactionById = getById(Transaction,);
 
 
 // @desc    Update transaction
 // @route   PUT /api/v1/transactions/:id
 // @access  Private
-const updateTransaction = update(Wallet);
+const updateTransaction = update(Transaction);
 
 
 // @desc    Delete transaction
 // @route   DELETE /api/v1/transactions/:id
 // @access  Private
-const deleteTransaction = deleteOne(Wallet);
+const deleteTransaction = deleteOne(Transaction);
 
 
 // @desc    Delete transactions
 // @route   DELETE /api/v1/transactions
 // @access  Private
-const deleteManyTransactions = deleteMany(Wallet);
+const deleteManyTransactions = deleteMany(Transaction);
 
 
 export {

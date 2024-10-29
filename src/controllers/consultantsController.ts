@@ -16,7 +16,10 @@ const createConsultant = createOne(Consultant);
 // @desc    Get consultants
 // @route   GET /api/v1/consultants
 // @access  Private
-const getConsultants = getMany(Consultant, {});
+const getConsultants = getMany(Consultant, {
+  path: "userId",
+  model: "User",
+});
 
 // @desc    Get consultant
 // @route   GET /api/v1/consultants/:id

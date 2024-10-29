@@ -20,6 +20,7 @@ import ticketsRoute from "./routes/ticketsRoute";
 import consultantsRoute from "./routes/consultantsRoute";
 import walletsRoute from "./routes/walletsRoute";
 import bookingRoute from "./routes/bookingsRoute";
+import reviewsRoute from "./routes/reviewsRoute";
 import { globalErrorMiddleware } from "./middlewares/ErrorMiddleware";
 import redisClient from "./../utils/redis";
 import logger from "./middlewares/loggerMiddleware";
@@ -75,6 +76,7 @@ app.use("/api/v1/availabilityTimes", availabilityTimesRoute);
 app.use("/api/v1/tickets", ticketsRoute);
 app.use("/api/v1/consultants", consultantsRoute);
 app.use("/api/v1/bookings", bookingRoute);
+app.use("/api/v1/reviews", reviewsRoute);
 
 // Error Api
 app.use("*", (req, res, next) => {

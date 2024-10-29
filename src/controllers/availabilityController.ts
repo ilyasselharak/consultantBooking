@@ -1,5 +1,5 @@
 import Availability from "../models/AvailabilityModel";
-import asyncHandler from 'express-async-handler';
+import asyncHandler from "express-async-handler";
 import { Request, Response, NextFunction } from "express";
 import {
   createOne,
@@ -10,17 +10,19 @@ import {
   update,
 } from "./handlersFactory";
 
-
-
-
-
 const createAvailability = createOne(Availability);
 
 // @desc    Get availabilities
 // @route   GET /api/v1/availabilities
 // @access  Private
-const getAvailabilities = getMany(Availability, {});
-
+const getAvailabilities = getMany(Availability, {
+  path: "availabilityDays",
+  model: "AvailabilityDays",
+  populate: {
+    path: "availabilityTimes",
+    model: "AvailabilityTimes",
+  },
+});
 
 // @desc    Get availability
 // @route   GET /api/v1/availabilities/:id
@@ -32,14 +34,11 @@ const getAvailabilityById = getById(Availability);
 // @access  Private
 const updateAvailability = update(Availability);
 
-
 // @desc    Delete availability
 // @route   DELETE /api/v1/availabilities/:id
 // @access  Private
 
 const deleteAvailability = deleteOne(Availability);
-
-
 
 // @desc    Delete many availabilities
 // @route   DELETE /api/v1/availabilities
