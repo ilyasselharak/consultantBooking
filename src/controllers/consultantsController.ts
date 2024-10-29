@@ -11,7 +11,10 @@ import {
 // @desc    Create consultant
 // @route   POST /api/v1/consultants
 // @access  Private
-const createConsultant = createOne(Consultant);
+const createConsultant = () => {
+  createOne(Consultant);
+  
+};
 
 // @desc    Get consultants
 // @route   GET /api/v1/consultants

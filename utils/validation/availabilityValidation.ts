@@ -1,70 +1,65 @@
-import { body, param } from 'express-validator';
-import validatorMiddleware from './../../src/middlewares/validationMiddleware';
-import { Types } from 'mongoose';
-import { validateExists } from './commonValidation';
-import Consultant from '../../src/models/ConsultantModel';
-import Availability from '../../src/models/AvailabilityModel';
+import { body, param } from "express-validator";
+import validatorMiddleware from "./../../src/middlewares/validationMiddleware";
+import { Types } from "mongoose";
+import { validateExists } from "./commonValidation";
+import Consultant from "../../src/models/ConsultantModel";
+import Availability from "../../src/models/AvailabilityModel";
 
 const createAvailabilityValidation = [
-  body('consultantId')
+  body("consultantId")
     .exists()
     .notEmpty()
-    .withMessage('Consultant ID is required')
+    .withMessage("Consultant ID is required")
     .isMongoId()
-    .custom(async value => await validateExists(Consultant, value))
-    .withMessage('Invalid consultant ID')
-    .custom(async value => {
-      const availability = await Availability.exists({ consultantId: value });
-      if (availability) {
-        throw new Error('This consultant already has an availability');
-      }
-      return true;
-    }),
+    .custom(async (value) => await validateExists(Consultant, value))
+    .withMessage("Invalid consultant ID"),
   validatorMiddleware,
 ];
 
 const getAvailabilityByIdValidation = [
-  param('id')
+  param("id")
     .exists()
     .notEmpty()
-    .withMessage('Availability ID is required')
+    .withMessage("Availability ID is required")
     .isMongoId()
-    .custom(async value => !!(await validateExists(Availability, value)))
-    .withMessage('Invalid availability ID'),
+    .custom(async (value) => !!(await validateExists(Availability, value)))
+    .withMessage("Invalid availability ID"),
   validatorMiddleware,
 ];
 
 const updateAvailabilityValidation = [
-  param('id')
+  param("id")
     .exists()
     .notEmpty()
-    .withMessage('Availability ID is required')
+    .withMessage("Availability ID is required")
     .isMongoId()
-    .custom(async value => !!(await validateExists(Availability, value)))
-    .withMessage('Invalid availability ID'),
+    .custom(async (value) => !!(await validateExists(Availability, value)))
+    .withMessage("Invalid availability ID"),
   validatorMiddleware,
 ];
 
 const deleteAvailabilityByIdValidation = [
-  param('id')
+  param("id")
     .exists()
     .notEmpty()
-    .withMessage('Availability ID is required')
+    .withMessage("Availability ID is required")
     .isMongoId()
-    .custom(async value => !!(await validateExists(Availability, value)))
-    .withMessage('Invalid availability ID'),
+    .custom(async (value) => !!(await validateExists(Availability, value)))
+    .withMessage("Invalid availability ID"),
   validatorMiddleware,
 ];
 
 const deleteAvailabilitiesValidation = [
-  body('ids')
+  body("ids")
     .exists()
     .notEmpty()
-    .withMessage('Availability IDs are required')
+    .withMessage("Availability IDs are required")
     .isArray()
-    .withMessage('Availability IDs must be an array')
-    .custom(value => !!value.every((id: string) => Types.ObjectId.isValid(id)))
-    .withMessage('Invalid availabilities IDs'),
+    .withMessage("Availability IDs must be an array")
+    .custom(
+      (value) => !!value.every((id: string) => Types.ObjectId.isValid(id))
+    )
+    .withMessage("Invalid availabilities IDs"),
   validatorMiddleware,
 ];
 
