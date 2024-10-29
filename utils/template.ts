@@ -1,4 +1,4 @@
-export const template = (token: number | string, time: number | string) => {
+export const template = (token: number | string, time: number | string, message: string) => {
   return `<!DOCTYPE html>
 <html>
   <head>
@@ -182,9 +182,7 @@ export const template = (token: number | string, time: number | string) => {
                   line-height: 24px;
                 "
               >
-                <p>
-                  Thank you for registering to B2C platform. to confirm your
-                  email address, Enter the confirmation code bellow is you App.
+                <p>${message}</p>
                 </p>
                 <p>
                   <span>Verification code is :</span>

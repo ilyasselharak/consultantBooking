@@ -7,6 +7,8 @@ import { sendEmail } from "./../../utils/sendEmail";
 import { ApiError } from "../../utils/APIError";
 import jwt from "jsonwebtoken";
 import Consultant from "../models/ConsultantModel";
+import { template } from "./../../utils/template";
+import moment from "moment";
 
 // @desc    Register user
 // @route   POST /api/v1/auth/register
@@ -23,6 +25,7 @@ const register = asyncHandler(
       }
 
       const token = Math.floor(100000 + Math.random() * 900000);
+      const time = new Date(Date.now() + 1000 * 60);
 
       const newUser = new User({
         fullName,
@@ -30,55 +33,17 @@ const register = asyncHandler(
         password: await bcrypt.hash(password, 12),
         token,
         role,
-        expireDate: new Date(Date.now() + 1000 * 60),
+        expireDate: time,
       });
-      const link = `http://localhost:3000/verify-acount?id=${newUser._id}`;
 
-      const verifyEmailHtml = `
-        <html lang="en">
-        <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Verify your email</title>
-        <style>
-        body {
-          font-family: Arial, sans-serif;
-          text-align: center;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          height: 100vh;
-          margin: 0;
-          padding: 0;
-        }
-        h2 {
-          margin-top: 0;
-        }
-        a {
-          display: block;
-          margin-top: 1rem;
-          margin: auto;
-          padding: 1rem 4rem;
-          width: fit-content;
-          background-color: #4caf50;
-          color: white;
-          text-decoration: none;
-          border-radius: 4px;
-        }
-        </style>
-        </head>
-        <body>
-        <h2>Hello,</h2>
-        <p>Thank you for registering with our website. Your verification code is ${token}</p>
-        </body>
-        </html>
-        `;
+      const verifyEmailHtml = template(token, moment(1000 * 60).fromNow(), "");
       sendEmail(verifyEmailHtml, "verify your email", email);
 
       await newUser.save();
 
-      res.status(201).json({ message: "User signed in successfully", userId: newUser._id });
+      res
+        .status(201)
+        .json({ message: "User signed in successfully", userId: newUser._id });
     } catch (error) {
       return next(new ApiError(`Error registering user: ${error}`, 500));
     }
@@ -95,9 +60,7 @@ const login = asyncHandler(
 
       const user = await User.findOne({ email });
 
-      if (
-        !user 
-      ) {
+      if (!user) {
         return next(new ApiError("Invalid credentials", 400));
       }
 
@@ -107,7 +70,6 @@ const login = asyncHandler(
         return next(new ApiError("Invalid credentials", 400));
       }
 
-      
       if (!user.verified) {
         if (user.role !== "Customer" && user.role !== "Consultant") {
           return next(new ApiError("Invalid credentials", 400));
@@ -116,47 +78,14 @@ const login = asyncHandler(
         user.token = `${token}`;
         user.expireDate = new Date(Date.now() + 1000 * 60);
 
-        const link = `http://localhost:3000/verify-acount?id=${user._id}`;
-        const verifyEmailHtml =`
-        <html lang="en">
-        <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Verify your email</title>
-        <style>
-        body {
-          font-family: Arial, sans-serif;
-          text-align: center;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          height: 100vh;
-          margin: 0;
-          padding: 0;
-        }
-        h2 {
-          margin-top: 0;
-        }
-        a {
-          display: block;
-          margin-top: 1rem;
-          margin: auto;
-          padding: 1rem 4rem;
-          width: fit-content;
-          background-color: #4caf50;
-          color: white;
-          text-decoration: none;
-          border-radius: 4px;
-        }
-        </style>
-        </head>
-        <body>
-        <h2>Hello,${user.fullName}</h2>
-        <p>Thank you for registering with our website. Your verification code is ${token}</p>
-        <a href="${link}">verify your email</a>
-        </body>
-        </html>`;
+        const verifyEmailHtml = template(
+          token,
+          moment(1000 * 60).fromNow(),
+          "Thank you for registering with our website. Your verification code is"
+        );
+
+        sendEmail(verifyEmailHtml, "Verify your email", email);
+        await user.save();
         return next(
           new ApiError(
             "User not verified, we sent a new code to your email, please check your email",
@@ -164,19 +93,69 @@ const login = asyncHandler(
           )
         );
       }
-      if (user.role === "Consultant") {
-        const notExist = await Consultant.findOne({ userId: user._id });
-        if (!notExist) {
-          res.status(200).json({ message: "Consultant is not exist yet, please create it", userId: user._id });
-          return;
+      // if (user.role === "Consultant") {
+      //   const notExist = await Consultant.findOne({ userId: user._id });
+      //   if (!notExist) {
+      //     res
+      //       .status(200)
+      //       .json({
+      //         message: "Consultant is not exist yet, please create it",
+      //         userId: user._id,
+      //       });
+      //     return;
+      //   }
+      // }
+      const token = jwt.sign(
+        { id: user._id, role: user.role },
+        process.env.JWT_SECRET!,
+        {
+          expiresIn: "1h",
         }
-      }
-      const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET!, {
-        expiresIn: "1h",
-      });
-      res.status(200).json({ message: "User logged in successfully", token, role: user.role });
+      );
+      res
+        .status(200)
+        .json({
+          message: "User logged in successfully",
+          token,
+        });
     } catch (error) {
       return next(new ApiError(`Error logging in user: ${error}`, 500));
+    }
+  }
+);
+
+// @desc    get Account
+// @route   GET /api/v1/auth/account
+// @access  Private
+const getAccount = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (!req?.user?.id || !req?.user?.role) {
+        return next(new ApiError("Not authorized, token is required", 401));
+      }
+      let consultant;
+
+      if (req.user.role === "Consultant") {
+        const notExist = await Consultant.findOne({ userId: req.user.id });
+
+        if (!notExist) {
+          res
+            .status(200)
+            .json({
+              message: "Consultant is not exist yet, please create it",
+              userId: req.user.id,
+            });
+          return;
+        }
+        consultant = notExist;
+      }
+
+      const user = await User.findById(req.user.id).select("-password");
+      const data = { ...user, ...{ consultant: !!consultant } };
+
+      res.status(200).json({ data });
+    } catch (error) {
+      return next(new ApiError(`Error getting user: ${error}`, 500));
     }
   }
 );
@@ -209,52 +188,14 @@ const verifyUser = asyncHandler(
       ) {
         // message verify send again
         const token = Math.floor(100000 + Math.random() * 900000);
+        const time = new Date(Date.now() + 1000 * 60);
         user.token = `${token}`;
-        user.expireDate = new Date(Date.now() + 1000 * 60);
-        const link = `http://localhost:3000/verify-acount?id=${user._id}`;
-        const verifyEmailHtml = `
-        <html lang="en">
-        <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Verify your email</title>
-        <style>
-        body {
-          font-family: Arial, sans-serif;
-          text-align: center;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          height: 100vh;
-          margin: 0;
-          padding: 0;
-        
-        }
-        h2 {
-          margin-top: 0;
-        }
-        a {
-          display: block;
-          margin-top: 1rem;
-          margin: auto;
-          padding: 1rem 4rem;
-          width: fit-content;
-          background-color: #4caf50;
-          color: white;
-          text-decoration: none;
-          border-radius: 4px;
-        }
-        </style>
-        </head>
-        <body>
-        <h2>Hello,</h2>
-        <p>Thank you for registering with our website. Your verification code is ${token}</p>
-        
-        </body>
-        </html>
-        `;
-
+        user.expireDate = time;
+        const verifyEmailHtml = template(
+          token,
+          moment(1000 * 60).fromNow(),
+          "Thank you for registering with our website. Your verification code is "
+        );
         sendEmail(verifyEmailHtml, "verify your email", user.email);
         await user.save();
         return next(new ApiError("Token expired", 400));
@@ -284,54 +225,17 @@ const forgotPassword = asyncHandler(
       }
 
       const token = crypto.randomBytes(32).toString("hex");
+      const time = new Date(Date.now() + 1000 * 60);
       user.token = token;
-      user.expireDate = new Date(Date.now() + 1000 * 60);
+      user.expireDate = time;
       await user.save();
 
-      const link = `http://localhost:3000/reset-password/${user._id}/${token}`;
-      const verifyEmailHtml = `
-        <html lang="en">
-        <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Reset your password</title>
-        <style>
-        body {
-          font-family: Arial, sans-serif;
-          text-align: center;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          height: 100vh;
-          margin: 0;
-          padding: 0;
-        }
-        h2 {
-          margin-top: 0;
-        }
-        a {
-          display: block;
-          margin-top: 1rem;
-          margin: auto;
-          padding: 1rem 4rem;
-          width: fit-content;
-          background-color: #4caf50;
-          color: white;
-          text-decoration: none;
-          border-radius: 4px;
-        }
-        </style>
-        </head>
-        <body>
-        <h2>Hello,</h2>
-        <p>Thank you for requesting a password reset. Please click on the following link to reset your password:</p>
-        <a href="${link}">reset password</a>
-        </body>
-        </html>
-        `;
-
-      sendEmail(verifyEmailHtml, "Reset your password", email);
+      const temp = template(
+        token,
+        moment(1000 * 60).format("mm:ss"),
+        "Thank you for requesting a password reset. Please click on the following link to reset your password:"
+      );
+      sendEmail(temp, "Reset your password", email);
 
       res
         .status(200)
@@ -379,4 +283,11 @@ const resetPassword = asyncHandler(
   }
 );
 
-export { register, login, verifyUser, forgotPassword, resetPassword };
+export {
+  register,
+  login,
+  verifyUser,
+  forgotPassword,
+  resetPassword,
+  getAccount,
+};

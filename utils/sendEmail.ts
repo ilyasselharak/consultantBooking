@@ -5,11 +5,6 @@ export const sendEmail = async (
   subject: string,
   email: string
 ): Promise<boolean> => {
-
-    console.log({
-        htmlTemplate,
-        subject,
-        email})
   try {
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -26,8 +21,11 @@ export const sendEmail = async (
       html: htmlTemplate,
     };
 
-      const result = await transporter.sendMail(mailOptions);
-      console.log(result);
+    const result = await transporter.sendMail(mailOptions);
+    if (!result) {
+      console.error("Failed to send email");
+      return false;
+    }
     return true;
   } catch (error) {
     console.log(error);

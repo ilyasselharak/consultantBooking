@@ -58,6 +58,27 @@
     }
   ],
   "paths": {
+    "/api/v1/auth/account": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Get account",
+        "description": "Get account",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "The token of the account"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/v1/auth/register": {
       "description": "Authentication route ",
 

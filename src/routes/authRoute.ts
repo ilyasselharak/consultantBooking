@@ -12,9 +12,12 @@ import {
   register,
   login,
   verifyUser,
+  getAccount,
 } from "../controllers/authController";
 
 const router = express.Router();
+
+router.get("/account", getAccount)
 
 router.post("/login", loginValidation, login);
 
