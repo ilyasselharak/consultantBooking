@@ -1,9 +1,4 @@
 import { Schema, model } from "mongoose";
-import User from "./UserModel";
-import Availability from "./AvailabilityModel";
-import AvailabilityDays from "./AvailabilityDaysModel";
-import AvailabilityTimes from "./AvailabilityTimesModel";
-import Wallet from "./WalletModel";
 
 const consultantSchema = new Schema(
   {

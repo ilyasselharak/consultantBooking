@@ -5,8 +5,10 @@ import {
   deleteOne,
   getById,
   getMany,
+  getSpecificOne,
   update,
 } from "./handlersFactory";
+
 
 // @desc    Create user
 // @route   POST /api/v1/users

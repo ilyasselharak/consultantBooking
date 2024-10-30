@@ -1787,6 +1787,15 @@
                   "type": "string",
                   "required": true
                 },
+                "IBAN": {
+                  "type": "string",
+                  "required": true
+                },
+                "bio": {
+                  "type": "string",
+                  "required": true
+                },
+
                 "ICE": {
                   "type": "string",
                   "required": true
@@ -2042,8 +2051,42 @@
               "properties": {
                 "consultantId": {
                   "type": "string",
-                  "required": true,
+                  "description": "The ID of the consultant",
                   "unique": true
+                },
+                "schedule": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "day": {
+                        "type": "string",
+                        "default": "2025-01-01"
+                      },
+                      "times": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "startTime": {
+                              "type": "string",
+                              "default": "00:00"
+                            },
+                            "endTime": {
+                              "type": "string",
+                              "default": "00:00"
+                            }
+                          },
+                          "required": ["startTime", "endTime"]
+                        }
+                      }
+                    },
+                    "required": ["day", "times"]
+                  }
+                },
+                "isAvailable": {
+                  "type": "boolean",
+                  "default": true
                 }
               },
               "required": ["consultantId"]
@@ -2108,6 +2151,52 @@
             "required": true,
             "type": "string",
             "description": "The ID of the availability"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "schedule": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "day": {
+                        "type": "string"
+                      },
+                      "times": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "startTime": {
+                              "type": "string"
+                            },
+                            "endTime": {
+                              "type": "string"
+                            },
+                            "_id": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "_id": {
+                        "type": "string"
+                      }
+                    },
+                    "required": ["_id"]
+                  }
+                },
+                "isAvailable": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["schedule"]
+            }
           }
         ],
         "responses": {
@@ -2140,6 +2229,158 @@
             "required": true,
             "type": "string",
             "description": "The ID of the availability"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Availability deleted successfully"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/availability/consultant/{consultantId}": {
+      "get": {
+        "tags": ["Availability"],
+        "summary": "Get specific availability",
+        "description": "Get specific availability",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
+            "name": "consultantId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the availability"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Availability"],
+        "summary": "add specific availability",
+        "description": "add specific availability",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
+            "name": "consultantId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the consultant"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "schedule": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "day": {
+                        "type": "string"
+                      },
+                      "times": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "startTime": {
+                              "type": "string"
+                            },
+                            "endTime": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "required": ["schedule"]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Availability updated successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid availability ID"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Availability"],
+        "summary": "Delete availability",
+        "description": "Delete availability",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
+            "name": "consultantId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the availability"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "scheduleUpdates": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "dayId": {
+                        "type": "string",
+                        "description": "The ID of the day"
+                      },
+                      "timeId": {
+                        "type": "string",
+                        "description": "The ID of the time"
+                      }
+                    },
+                    "required": ["dayId"],
+                    "additionalProperties": false
+                  }
+                }
+              }
+            }
           }
         ],
         "responses": {

@@ -6,6 +6,8 @@ import {
   updateAvailabilityValidation,
   deleteAvailabilityByIdValidation,
   deleteAvailabilitiesValidation,
+  addDayOrTimesValidation,
+  deleteScheduleValidation,
 } from "../../utils/validation/availabilityValidation";
 import {
   createAvailability,
@@ -14,9 +16,20 @@ import {
   deleteManyAvailabilities,
   getAvailabilities,
   getAvailabilityById,
+  getSpecificAvailability,
+  addDayOrTimes,
+  deleteSchedule,
 } from "../controllers/availabilityController";
 
 const router = express.Router();
+
+// get the availability of a specific consultant
+// Add days or times of the availability of a specific consultant
+router
+  .route("/consultant/:consultantId")
+  .get(getSpecificAvailability)
+  .post(addDayOrTimesValidation, addDayOrTimes)
+  .delete(deleteScheduleValidation, deleteSchedule)
 
 router
   .route("/")
@@ -29,6 +42,6 @@ router
   .put(updateAvailabilityValidation, updateAvailability)
   .delete(deleteAvailabilityByIdValidation, deleteAvailability);
 
-  router.route("/consultantId").get()
+router.route("/consultantId").get();
 
 export default router;
