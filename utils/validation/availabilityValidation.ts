@@ -74,6 +74,7 @@ const addDayOrTimesValidation = [
 ];
 
 
+
 const createAvailabilityValidation = [
   body("consultantId")
     .exists()
@@ -81,6 +82,7 @@ const createAvailabilityValidation = [
     .withMessage("Consultant ID is required")
     .isMongoId()
     .custom(async (value) => await validateExists(Consultant, value))
+
     .withMessage("Invalid consultant ID")
     .custom(async (value) => {
       const availability = await Availability.exists({ consultantId: value });
@@ -159,6 +161,7 @@ const createAvailabilityValidation = [
       }
       return true;
     }),
+
   validatorMiddleware,
 ];
 
@@ -188,6 +191,7 @@ const updateAvailabilityValidation = [
     .isMongoId()
     .custom(async (value) => !!(await validateExists(Availability, value)))
     .withMessage("Invalid availability ID"),
+
   body("schedule")
     .exists()
     .notEmpty()

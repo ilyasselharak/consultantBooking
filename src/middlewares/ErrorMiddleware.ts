@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 interface CustomError extends Error {
-    statusCode: number;
-    status: string;
+  statusCode: number;
+  status: string;
 }
 
 export const globalErrorMiddleware = (

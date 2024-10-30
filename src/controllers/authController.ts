@@ -81,7 +81,7 @@ const login = asyncHandler(
         const verifyEmailHtml = template(
           token,
           moment(1000 * 60).fromNow(),
-          "Thank you for registering with our website. Your verification code is"
+          "Thank you for registering with our website."
         );
 
         sendEmail(verifyEmailHtml, "Verify your email", email);
@@ -112,12 +112,10 @@ const login = asyncHandler(
           expiresIn: "1h",
         }
       );
-      res
-        .status(200)
-        .json({
-          message: "User logged in successfully",
-          token,
-        });
+      res.status(200).json({
+        message: "User logged in successfully",
+        token,
+      });
     } catch (error) {
       return next(new ApiError(`Error logging in user: ${error}`, 500));
     }
@@ -140,12 +138,10 @@ const getAccount = asyncHandler(
         // const availability
 
         if (!notExist) {
-          res
-            .status(200)
-            .json({
-              message: "Consultant is not exist yet, please create it",
-              userId: req.user.id,
-            });
+          res.status(200).json({
+            message: "Consultant is not exist yet, please create it",
+            userId: req.user.id,
+          });
           return;
         }
         consultant = notExist;
@@ -195,7 +191,7 @@ const verifyUser = asyncHandler(
         const verifyEmailHtml = template(
           token,
           moment(1000 * 60).fromNow(),
-          "Thank you for registering with our website. Your verification code is "
+          "Thank you for registering with our website."
         );
         sendEmail(verifyEmailHtml, "verify your email", user.email);
         await user.save();
@@ -234,13 +230,14 @@ const forgotPassword = asyncHandler(
       const temp = template(
         token,
         moment(1000 * 60).format("mm:ss"),
-        "Thank you for requesting a password reset. Please click on the following link to reset your password:"
+        "Thank you for requesting a password reset."
       );
       sendEmail(temp, "Reset your password", email);
 
-      res
-        .status(200)
-        .json({ message: "Password reset link sent successfully" });
+      res.status(200).json({
+        message: "Password reset link sent successfully",
+        id: user.id,
+      });
     } catch (error) {
       return next(new ApiError(`Error resetting password: ${error}`, 500));
     }
@@ -255,7 +252,7 @@ const resetPassword = asyncHandler(
     const { id, token } = req.params;
     const { password } = req.body;
     try {
-      const user = await User.findOne({ _id: id });
+      const user = await User.findById(id);
       if (!user) {
         return next(new ApiError("User not found", 400));
       }
@@ -274,7 +271,6 @@ const resetPassword = asyncHandler(
       user.password = await bcrypt.hash(password, 12);
       user.token = null;
       user.expireDate = null;
-
       await user.save();
 
       res.status(200).json({ message: "Password reset successfully" });
