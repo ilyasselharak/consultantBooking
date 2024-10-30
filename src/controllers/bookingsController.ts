@@ -8,6 +8,8 @@ import {
   update,
 } from "./handlersFactory";
 
+
+
 // @desc    Create booking
 // @route   POST /api/v1/bookings
 // @access  Private

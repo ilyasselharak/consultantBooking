@@ -93,18 +93,18 @@ const login = asyncHandler(
           )
         );
       }
-      // if (user.role === "Consultant") {
-      //   const notExist = await Consultant.findOne({ userId: user._id });
-      //   if (!notExist) {
-      //     res
-      //       .status(200)
-      //       .json({
-      //         message: "Consultant is not exist yet, please create it",
-      //         userId: user._id,
-      //       });
-      //     return;
-      //   }
-      // }
+      if (user.role === "Consultant") {
+        const notExist = await Consultant.findOne({ userId: user._id });
+        if (!notExist) {
+          res
+            .status(200)
+            .json({
+              message: "Consultant is not exist yet, please create it",
+              userId: user._id,
+            });
+          return;
+        }
+      }
       const token = jwt.sign(
         { id: user._id, role: user.role },
         process.env.JWT_SECRET!,
@@ -135,6 +135,7 @@ const getAccount = asyncHandler(
 
       if (req.user.role === "Consultant") {
         const notExist = await Consultant.findOne({ userId: req.user.id });
+        // const availability
 
         if (!notExist) {
           res.status(200).json({

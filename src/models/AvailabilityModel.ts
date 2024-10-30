@@ -1,27 +1,41 @@
-import { model, ObjectId, Schema } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
-const AvailabilitySchema = new Schema(
+interface IAvailability extends Document {
+  consultantId: mongoose.Types.ObjectId;
+  schedule: {
+    day: string; // مثل "Monday"
+    times: { startTime: string; endTime: string }[]; // قائمة الأوقات
+  }[];
+  isAvailable: boolean;
+}
+
+const AvailabilitySchema = new Schema<IAvailability>(
   {
     consultantId: {
       type: Schema.Types.ObjectId,
-      ref: 'Consultant',
-      required: true,
+      ref: "Consultant",
       unique: true,
+      required: true,
     },
+    schedule: [
+      {
+        day: { type: String },
+        times: [
+          {
+            startTime: { type: String },
+            endTime: { type: String },
+          },
+        ],
+      },
+    ],
+    isAvailable: { type: Boolean, default: true },
   },
-  {
-    timestamps: true,
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
-  },
+  { timestamps: true }
 );
 
-AvailabilitySchema.virtual('availabilityDays', {
-  ref: 'AvailabilityDays', // Model to populate
-  localField: '_id', // Field in AvailSchema
-  foreignField: 'availabilityId', // Field in AvailDays
-});
-
-const Availability = model('Availability', AvailabilitySchema);
+const Availability = mongoose.model<IAvailability>(
+  "Availability",
+  AvailabilitySchema
+);
 
 export default Availability;
