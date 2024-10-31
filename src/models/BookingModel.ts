@@ -1,23 +1,22 @@
-import { model, Schema, ObjectId } from 'mongoose';
+import mongoose, { model, Schema, ObjectId } from "mongoose";
 
 interface IBooking {
-  userId: ObjectId;
+  customerId: ObjectId;
   consultantId: ObjectId;
   date: Date;
-  startTime: Date;
-  endTime: Date;
+  startTime: string;
+  endTime: string;
   price: number;
+  amount: number;
   status: string;
 }
 
-const bookingSchema = new Schema(
+const bookingSchema = new Schema<IBooking>(
   {
-    userId: {
-      type: String,
-      required: true,
-    },
+    customerId: { type: mongoose.Types.ObjectId, ref: "User", required: true },
     consultantId: {
-      type: String,
+      type: mongoose.Types.ObjectId,
+      ref: "Consultant",
       required: true,
     },
     // 2024-10-24
@@ -35,20 +34,21 @@ const bookingSchema = new Schema(
     },
     price: {
       type: Number,
-      // required: true,
+      required: true,
     },
+    
+    
     status: {
       type: String,
-      enum: ['pending', 'confirmed', 'cancelled'],
-      default: 'pending',
+      enum: ["pending", "completed", "cancelled", "notPaid"],
+      default: "notPaid",
     },
-    // TODO: add new fields {statusUpdate, numberUpdate, howUpdate}
   },
   {
     timestamps: true,
-  },
+  }
 );
 
-const Booking = model('Booking', bookingSchema);
+const Booking = model("Booking", bookingSchema);
 
 export default Booking;

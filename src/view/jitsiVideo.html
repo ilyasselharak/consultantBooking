@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="jitsi-container">
+        <!-- Jitsi Meet iframe will be rendered here -->
+  
+        <div id="jitsi-meet">
+            <script src="https://meet.jit.si/external_api.js"></script>
+        </div>
+    </div>
+    <script>
+      // Join the meeting
+      const domain = "meet.jit.si";
+      const options = {
+        roomName: "Room123",
+        width: 700,
+        height: 700,
+        parentNode: document.getElementById("jitsi-container"),
+      };
+      const api = new JitsiMeetExternalAPI(domain, options);
+
+      // Set duration in minutes (e.g., 30 minutes)
+      const meetingDuration = 60 * 1000; // 30 minutes in milliseconds
+
+      // Start timer when the meeting starts
+      setTimeout(() => {
+        api.executeCommand("hangup"); // Ends the call for all users
+      }, meetingDuration);
+      let participantCount = 0;
+
+      api.addEventListener("participantJoined", () => {
+        participantCount++;
+        console.log(`Participant joined. Total: ${participantCount}`);
+      });
+
+      api.addEventListener("participantLeft", () => {
+        participantCount--;
+        console.log(`Participant left. Total: ${participantCount}`);
+      });
+
+      console.log("JitsiMeetExternalAPI is ready", participantCount);
+    </script>
+  </body>
+</html>

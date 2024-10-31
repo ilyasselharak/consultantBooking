@@ -32,7 +32,6 @@ const addDayOrTimesValidation = [
           throw new Error("Times must be an array and cannot be empty.");
         }
 
-        // التحقق من كل وقت في الأوقات المحددة
         for (const time of day.times) {
           const startTime = moment(time.startTime, "HH:mm", true);
           const endTime = moment(time.endTime, "HH:mm", true);
@@ -55,10 +54,7 @@ const addDayOrTimesValidation = [
             );
           }
           if (duration > 1440) {
-            // 1440 دقيقة = 24 ساعة
-            throw new Error(
-              "Duration between start time and end time cannot exceed 24 hours."
-            );
+            throw new Error("Duration cannot exceed 24 hours.");
           }
 
           // التحقق من عدم دخول الوقت في اليوم التالي
@@ -66,10 +62,32 @@ const addDayOrTimesValidation = [
           if (endTime.isAfter(endOfDay)) {
             throw new Error("End time cannot be in the next day.");
           }
+
+          // تحقق التكرار: التأكد من عدم وجود نفس التاريخ والوقت مسبقًا في قاعدة البيانات
+           const existingEntry = await Availability.findOne({
+             "schedule.day": day.day,
+             "schedule.times": {
+               $elemMatch: {
+                 $or: [
+                   {
+                     startTime: { $lt: time.endTime },
+                     endTime: { $gt: time.startTime },
+                   },
+                 ],
+               },
+             },
+           });
+          console.log("existingEntry", existingEntry);
+
+          if (existingEntry) {  throw new Error(
+            `A conflicting schedule exists for ${day.day} from ${time.startTime} to ${time.endTime}.`
+          );
+          }
         }
       }
       return true; // إذا كانت جميع التحقق صحيحة
     }),
+
   validatorMiddleware,
 ];
 
@@ -100,10 +118,10 @@ const createAvailabilityValidation = [
     .custom(async (value) => {
       const currentDate = moment();
 
-      for (const day of value) {
+      for (const { day, times, _id } of value) {
         // التحقق من عدم خلو اليوم أو الأوقات
-        const hasDate = !!day.day;
-        const hasTimes = Array.isArray(day.times) && day.times.length > 0;
+        const hasDate = !!day;
+        const hasTimes = Array.isArray(times) && times.length > 0;
 
         if (!hasDate && !hasTimes) {
           throw new Error("At least one of 'day' or 'times' must be provided.");
@@ -111,35 +129,35 @@ const createAvailabilityValidation = [
 
         // التحقق من أن اليوم موجود وصالح إذا تم إدخال اليوم فقط
         if (hasDate && !hasTimes) {
-          if (!moment(day.day, "YYYY-MM-DD", true).isValid()) {
+          if (!moment(day, "YYYY-MM-DD", true).isValid()) {
             throw new Error("Invalid day format. Use YYYY-MM-DD.");
           }
-          if (moment(day.day).isBefore(currentDate, "day")) {
+          if (moment(day).isBefore(currentDate, "day")) {
             throw new Error("The day cannot be in the past.");
           }
         }
 
         // التحقق إذا كان الإدخال يحتوي على أوقات فقط بدون اليوم
         if (hasTimes && !hasDate) {
-          if (!day._id) {
+          if (!_id) {
             throw new Error("If times are provided, day ID must be present.");
           }
         }
 
         // التحقق من الأوقات وإجراء الاختبارات
-        for (const time of day.times) {
-          const startTime = moment(time.startTime, "HH:mm", true);
-          const endTime = moment(time.endTime, "HH:mm", true);
+        for (const { startTime, endTime } of times) {
+          const start = moment(startTime, "HH:mm", true);
+          const end = moment(endTime, "HH:mm", true);
 
-          if (!startTime.isValid() || !endTime.isValid()) {
+          if (!start.isValid() || !end.isValid()) {
             throw new Error("Start time and end time must be in HH:mm format.");
           }
 
-          if (startTime.isSameOrAfter(endTime)) {
+          if (start.isSameOrAfter(end)) {
             throw new Error("Start time must be before end time.");
           }
 
-          const duration = moment.duration(endTime.diff(startTime)).asMinutes();
+          const duration = moment.duration(end.diff(start)).asMinutes();
           if (duration < 10) {
             throw new Error(
               "Duration between start time and end time must be at least 10 minutes."
@@ -152,7 +170,7 @@ const createAvailabilityValidation = [
           }
 
           if (hasDate) {
-            const endOfDay = moment(day.day).endOf("day");
+            const endOfDay = moment(day).endOf("day");
             if (endTime.isAfter(endOfDay)) {
               throw new Error("End time cannot be in the next day.");
             }

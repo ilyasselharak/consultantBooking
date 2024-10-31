@@ -7,7 +7,11 @@ const reviewSchema = new Schema({
         ref: "Booking",
         required: true,
     },
-    rating: {
+    ratingOfConsultant: {
+        type: Number,
+        required: true,
+    },
+    ratingOfClient: {
         type: Number,
         required: true,
     },

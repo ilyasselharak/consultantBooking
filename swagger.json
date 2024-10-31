@@ -32,15 +32,6 @@
       "description": "Availability management routes"
     },
     {
-      "name": "AvailabilityDays",
-      "description": "Availability days management routes"
-    },
-    {
-      "name": "AvailabilityTimes",
-      "description": "Availability times management routes"
-    },
-
-    {
       "name": "Tickets",
       "description": "Ticket management routes"
     },
@@ -1838,7 +1829,11 @@
                   "type": "string",
                   "required": true
                 },
-                "priceHour": {
+                "timeUnit": {
+                  "type": "string",
+                  "required": true
+                },
+                "price": {
                   "type": "number",
                   "default": 0
                 }
@@ -1941,6 +1936,14 @@
                   "type": "string",
                   "description": "The expertise of the consultancy"
                 },
+                "IBAN": {
+                  "type": "string",
+                  "description": "The IBAN of the consultancy"
+                },
+                "bio": {
+                  "type": "string",
+                  "description": "The bio of the consultancy"
+                },
                 "ICE": {
                   "type": "string",
                   "description": "The ICE of the consultancy"
@@ -1960,6 +1963,35 @@
                 "businessName": {
                   "type": "string",
                   "description": "The business name of the consultancy"
+                },
+                "address": {
+                  "type": "object",
+                  "properties": {
+                    "city": {
+                      "type": "string",
+                      "description": "The city of the consultancy"
+                    },
+                    "street": {
+                      "type": "string",
+                      "description": "The street of the consultancy"
+                    },
+                    "zipCode": {
+                      "type": "string",
+                      "description": "The zip code of the consultancy"
+                    }
+                    }
+                  },
+                "phoneNumber": {
+                  "type": "string",
+                  "description": "The phone number of the consultancy"
+                },
+                "timeUnit": {
+                  "type": "string",
+                  "description": "The time unit of the consultancy"
+                },
+                "price": {
+                  "type": "number",
+                  "description": "The price of the consultancy"
                 }
               }
             }
@@ -2393,321 +2425,6 @@
         }
       }
     },
-    "/api/v1/availabilityDays": {
-      "get": {
-        "tags": ["AvailabilityDays"],
-        "summary": "Get availability days",
-        "description": "Get availability days",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "required": true,
-            "type": "string",
-            "description": "Bearer token"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "post": {
-        "tags": ["AvailabilityDays"],
-        "summary": "Create availability day",
-        "description": "Create availability day",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "required": true,
-            "type": "string",
-            "description": "Bearer token"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "availabilityId": {
-                  "type": "string",
-                  "description": "The ID of the availability",
-                  "required": true
-                },
-                "date": {
-                  "type": "string",
-                  "defult": "2022-01-01",
-                  "format": "date",
-                  "description": "The date of the availability day",
-                  "required": true
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Availability day created successfully"
-          },
-          "400": {
-            "description": "Bad Request: Invalid availability day"
-          },
-          "500": {
-            "description": "Internal server error"
-          }
-        }
-      }
-    },
-    "/api/v1/availabilityDays/{id}": {
-      "get": {
-        "tags": ["AvailabilityDays"],
-        "summary": "Get availability day",
-        "description": "Get availability day",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "required": true,
-            "type": "string",
-            "description": "Bearer token"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "put": {
-        "tags": ["AvailabilityDays"],
-        "summary": "Update availability day",
-        "description": "Update availability day",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "required": true,
-            "type": "string",
-            "description": "Bearer token"
-          },
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "description": "The ID of the availability day"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "date": {
-                  "type": "Date",
-                  "required": true
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Availability day updated successfully"
-          },
-          "400": {
-            "description": "Bad Request: Invalid availability day"
-          },
-          "500": {
-            "description": "Internal server error"
-          }
-        }
-      },
-      "delete": {
-        "tags": ["AvailabilityDays"],
-        "summary": "Delete availability day",
-        "description": "Delete availability day",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "required": true,
-            "type": "string",
-            "description": "Bearer token"
-          },
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "description": "The ID of the availability day"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Availability day deleted successfully"
-          },
-          "500": {
-            "description": "Internal server error"
-          }
-        }
-      }
-    },
-    "/api/v1/availabilityTimes": {
-      "get": {
-        "tags": ["AvailabilityTimes"],
-        "summary": "Get availability times",
-        "description": "Get availability times",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "required": true,
-            "type": "string",
-            "description": "Bearer token"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "post": {
-        "tags": ["AvailabilityTimes"],
-        "summary": "Create availability time",
-        "description": "Create availability time",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "required": true,
-            "type": "string",
-            "description": "Bearer token"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "availabilityDayId": {
-                  "type": "string",
-                  "description": "The ID of the availability day",
-                  "required": true
-                },
-                "startTime": {
-                  "type": "string",
-                  "description": "The start time of the availability time",
-                  "required": true
-                },
-                "endTime": {
-                  "type": "string",
-                  "description": "The end time of the availability time",
-                  "required": true
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Availability time created successfully"
-          },
-          "400": {
-            "description": "Bad Request: Invalid availability time"
-          },
-          "500": {
-            "description": "Internal server error"
-          }
-        }
-      }
-    },
-    "/api/v1/availabilityTimes/{id}": {
-      "get": {
-        "tags": ["AvailabilityTimes"],
-        "summary": "Get availability time",
-        "description": "Get availability time",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "required": true,
-            "type": "string",
-            "description": "Bearer token"
-          },
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "description": "The ID of the availability time"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "put": {
-        "tags": ["AvailabilityTimes"],
-        "summary": "Update availability time",
-        "description": "Update availability time",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "required": true,
-            "type": "string",
-            "description": "Bearer token"
-          },
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "description": "The ID of the availability time"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "startTime": {
-                  "type": "string",
-                  "description": "The start time of the availability time",
-                  "required": true
-                },
-                "endTime": {
-                  "type": "string",
-                  "description": "The end time of the availability time",
-                  "required": true
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Availability time updated successfully"
-          },
-          "400": {
-            "description": "Bad Request: Invalid availability time"
-          },
-          "500": {
-            "description": "Internal server error"
-          }
-        }
-      }
-    },
     "/api/v1/bookings": {
       "get": {
         "tags": ["Bookings"],
@@ -2747,7 +2464,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "userId": {
+                "customerId": {
                   "type": "string",
                   "description": "The ID of the user",
                   "required": true
@@ -2774,8 +2491,14 @@
                   "format": "HH:mm",
                   "description": "The end time of the booking",
                   "required": true
+                },
+                "price": {
+                  "type": "number",
+                  "description": "The price of the booking",
+                  "required": true
                 }
-              }
+              },
+              "required": ["userId", "consultantId", "date", "startTime", "endTime"]
             }
           }
         ],
@@ -2862,6 +2585,10 @@
                       "type": "string",
                       "format": "date-time",
                       "description": "The end time of the booking"
+                    },
+                    "price": {
+                      "type": "number",
+                      "description": "The price of the booking"
                     }
                   }
                 },

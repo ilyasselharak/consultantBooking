@@ -45,14 +45,17 @@ const createOne = (Model: MongooseModel<any>) =>
     // }
   });
 
+interface PopulatePath {
+  path: string;
+}
+
 interface PopulateOptions {
   path: string;
   select?: string | string[];
-  model?: string;
+  model: string;
   populate?: PopulateOptions;
-  match?: any;
-  options?: any;
-}
+}[];
+
 
 // جعل `populate` اختيارياً في الدالة
 const getMany = (Model: MongooseModel<any>, populate?: PopulateOptions) =>

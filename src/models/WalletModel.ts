@@ -1,22 +1,28 @@
-import mongoose, { Schema } from "mongoose";
+import { model, Schema } from "mongoose";
 
-
-const walletSchema = new mongoose.Schema({
-    consultantId: {
-        type: Schema.Types.ObjectId,
-        ref: "Consultant",
-        required: true
+const walletSchema = new Schema(
+  {
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
     balance: {
-        type: Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
-    
-}, {
-    timestamps: true
-});
+    currency: {
+      type: String,
+      default: "USD",
+    }
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const Wallet = model("Wallet", walletSchema);
+
+export default Wallet;
 
 
-const Wallet = mongoose.model('Wallet', walletSchema);
-
-export default Wallet

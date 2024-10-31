@@ -9,6 +9,9 @@ import jwt from "jsonwebtoken";
 import Consultant from "../models/ConsultantModel";
 import { template } from "./../../utils/template";
 import moment from "moment";
+import Availability from "../models/AvailabilityModel";
+import Transaction from "../models/TransactionModel";
+import Wallet from "../models/WalletModel";
 
 // @desc    Register user
 // @route   POST /api/v1/auth/register
@@ -41,6 +44,10 @@ const register = asyncHandler(
 
       await newUser.save();
 
+      
+      await Wallet.create({
+        user: newUser._id,
+      });
       res
         .status(201)
         .json({ message: "User signed in successfully", userId: newUser._id });
@@ -105,6 +112,7 @@ const login = asyncHandler(
           return;
         }
       }
+
       const token = jwt.sign(
         { id: user._id, role: user.role },
         process.env.JWT_SECRET!,
@@ -135,7 +143,34 @@ const getAccount = asyncHandler(
 
       if (req.user.role === "Consultant") {
         const notExist = await Consultant.findOne({ userId: req.user.id });
-        // const availability
+        const availability = await Availability.findOne({
+          userId: req.user.id,
+        })
+
+        const transaction = await Transaction.find({
+          $or: [
+            {
+              $and: [
+                { "consultant.userId": req.user.id },
+                { "consultant.isDeleted": false },
+              ],
+            },
+            {
+              $and: [
+                { "customer.userId": req.user.id },
+                { "customer.isDeleted": false },
+              ],
+            },
+          ],
+        });
+
+        if (!availability) {
+          res.status(200).json({
+            message: "Availability is not exist yet, please create it",
+            userId: req.user.id,
+          });
+          return;
+        }
 
         if (!notExist) {
           res.status(200).json({
@@ -144,8 +179,9 @@ const getAccount = asyncHandler(
           });
           return;
         }
-        consultant = notExist;
+        consultant = {...notExist, availability};
       }
+
 
       const user = await User.findById(req.user.id).select("-password");
       const data = { ...user, ...{ consultant: !!consultant } };

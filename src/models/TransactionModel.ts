@@ -17,12 +17,13 @@ const transactionSchema = new Schema({
         enum: ["credit", "debit"],
         required: true
     },
-    createdAt: {
-        type: Date,
-        default: Date.now()
-    },
+    status: {
+        type: String,
+        enum: ["pending", "completed"],
+        default: "pending"
+    }
 }, {
-    timestamps: false
+    timestamps: true
 });
 
 

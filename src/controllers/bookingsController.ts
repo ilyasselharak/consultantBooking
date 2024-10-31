@@ -8,8 +8,6 @@ import {
   update,
 } from "./handlersFactory";
 
-
-
 // @desc    Create booking
 // @route   POST /api/v1/bookings
 // @access  Private
@@ -18,11 +16,7 @@ const createBooking = createOne(Booking);
 // @desc    Get bookings
 // @route   GET /api/v1/bookings
 // @access  Private
-const getBookings = getMany(Booking, {
-  path: "consultantId userId",
-  model: "Consultant User",
-});
-
+const getBookings = getMany(Booking);
 // @desc    Get booking
 // @route   GET /api/v1/bookings/:id
 // @access  Private
