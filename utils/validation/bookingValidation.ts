@@ -1,4 +1,4 @@
-import { body, param } from "express-validator";
+import { body, check, param } from "express-validator";
 import validatorMiddleware from "../../src/middlewares/validationMiddleware";
 import Consultant from "../../src/models/ConsultantModel";
 import {
@@ -153,6 +153,7 @@ const updateBookingValidation = [
     .withMessage("Invalid start time format")
     .custom(isTimeInFuture)
     .withMessage("Start time is in the past"),
+  
 
   body("endTime")
     .exists()

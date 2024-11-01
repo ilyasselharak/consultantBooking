@@ -7,11 +7,12 @@
   </head>
   <body>
     <div id="jitsi-container">
-        <!-- Jitsi Meet iframe will be rendered here -->
-  
-        <div id="jitsi-meet">
-            <script src="https://meet.jit.si/external_api.js"></script>
+      <!-- Jitsi Meet iframe will be rendered here -->
+
+      <div id="jitsi-meet">
+          <script src="https://meet.jit.si/external_api.js"></script>
         </div>
+        <div id="participant-count">Participants: 0</div>
     </div>
     <script>
       // Join the meeting
@@ -35,12 +36,16 @@
 
       api.addEventListener("participantJoined", () => {
         participantCount++;
-        console.log(`Participant joined. Total: ${participantCount}`);
+        document.getElementById(
+          "participant-count"
+        ).innerText = `Participants: ${participantCount}`;
       });
 
       api.addEventListener("participantLeft", () => {
         participantCount--;
-        console.log(`Participant left. Total: ${participantCount}`);
+        document.getElementById(
+          "participant-count"
+        ).innerText = `Participants: ${participantCount}`;
       });
 
       console.log("JitsiMeetExternalAPI is ready", participantCount);

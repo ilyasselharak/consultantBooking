@@ -19,6 +19,7 @@ import consultantsRoute from "./routes/consultantsRoute";
 import walletsRoute from "./routes/walletsRoute";
 import bookingRoute from "./routes/bookingsRoute";
 import reviewsRoute from "./routes/reviewsRoute";
+import paymentRoute from "./routes/paymentRoute";
 import { globalErrorMiddleware } from "./middlewares/ErrorMiddleware";
 import redisClient from "./../utils/redis";
 import logger from "./middlewares/loggerMiddleware";
@@ -63,7 +64,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Routes
 app.use("/api/v1/auth", authRoute);
-app.use("/api/v1/staffs", staffsRoute)
+app.use("/api/v1/staffs", staffsRoute);
 app.use("/api/v1/permissions", permissionsRoute);
 app.use("/api/v1/users", usersRoute);
 app.use("/api/v1/wallets", walletsRoute);
@@ -73,6 +74,7 @@ app.use("/api/v1/tickets", ticketsRoute);
 app.use("/api/v1/consultants", consultantsRoute);
 app.use("/api/v1/bookings", bookingRoute);
 app.use("/api/v1/reviews", reviewsRoute);
+app.use("/api/v1/payment", paymentRoute);
 
 // Error Api
 app.use("*", (req, res, next) => {

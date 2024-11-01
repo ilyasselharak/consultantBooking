@@ -46,6 +46,14 @@
     {
       "name": "Bookings",
       "description": "Booking management routes"
+    },
+    {
+      "name": "Reviews",
+      "description": "Review management routes"
+    },
+    {
+      "name": "Payments",
+      "description": "Payment management routes"
     }
   ],
   "paths": {
@@ -1979,8 +1987,8 @@
                       "type": "string",
                       "description": "The zip code of the consultancy"
                     }
-                    }
-                  },
+                  }
+                },
                 "phoneNumber": {
                   "type": "string",
                   "description": "The phone number of the consultancy"
@@ -2498,7 +2506,13 @@
                   "required": true
                 }
               },
-              "required": ["userId", "consultantId", "date", "startTime", "endTime"]
+              "required": [
+                "userId",
+                "consultantId",
+                "date",
+                "startTime",
+                "endTime"
+              ]
             }
           }
         ],
@@ -2639,6 +2653,346 @@
           },
           "404": {
             "description": "Bad Request: Invalid booking"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/payments": {
+      "post": {
+        "tags": ["Payments"],
+        "summary": "Create payment",
+        "description": "Create payment",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "bookingId": {
+                  "type": "string",
+                  "description": "The ID of the booking"
+                },
+                "amount": {
+                  "type": "number",
+                  "description": "The amount of the payment"
+                }
+              },
+              "required": ["bookingId", "amount"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment created successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid payment"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/payments/{id}": {
+      "get": {
+        "tags": ["Payments"],
+        "summary": "Get payment",
+        "description": "Get payment",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the payment"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Bad Request: Invalid payment"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Payments"],
+        "summary": "Update payment",
+        "description": "Update payment",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the payment"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "The status of the payment",
+                  "enum": ["paid", "unpaid"]
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment updated successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid payment"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Payments"],
+        "summary": "Cancel payment",
+        "description": "Cancel payment",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the payment"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment canceled successfully"
+          },
+          "404": {
+            "description": "Bad Request: Invalid payment"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/reviews": {
+      "post": {
+        "tags": ["Reviews"],
+        "summary": "Create review",
+        "description": "Create review",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "bookingId": {
+                  "type": "string",
+                  "description": "The ID of the booking"
+                },
+                "rating": {
+                  "type": "number",
+                  "description": "The rating of the review"
+                },
+                "comment": {
+                  "type": "string",
+                  "description": "The comment of the review"
+                }
+              },
+              "required": ["bookingId", "rating", "comment"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Review created successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid review"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Reviews"],
+        "summary": "Get reviews",
+        "description": "Get reviews",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/reviews/{id}": {
+      "get": {
+        "tags": ["Reviews"],
+        "summary": "Get review",
+        "description": "Get review",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the review"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Reviews"],
+        "summary": "Update review",
+        "description": "Update review",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the review"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "rating": {
+                  "type": "number",
+                  "description": "The rating of the review"
+                },
+                "comment": {
+                  "type": "string",
+                  "description": "The comment of the review"
+                }
+              },
+              "required": ["rating", "comment"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Review updated successfully"
+          },
+          "400": {
+            "description": "Bad Request: Invalid review"
+          },
+          "500": { "description": "Internal server error" }
+        }
+      },
+      "delete": {
+        "tags": ["Reviews"],
+        "summary": "Delete review",
+        "description": "Delete review",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the review"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Review deleted successfully"
           },
           "500": {
             "description": "Internal server error"

@@ -22,6 +22,7 @@ export const sendEmail = async (
     };
 
     const result = await transporter.sendMail(mailOptions);
+    console.log(result);
     if (!result) {
       console.error("Failed to send email");
       return false;

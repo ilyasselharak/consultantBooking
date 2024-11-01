@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import { model, Schema } from "mongoose";
 
 const paymentSchema = new Schema(
   {
@@ -23,3 +23,6 @@ const paymentSchema = new Schema(
     timestamps: true,
   }
 );
+
+const Payment = model("Payment", paymentSchema);
+export default Payment;

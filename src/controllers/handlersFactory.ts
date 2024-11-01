@@ -24,6 +24,7 @@ const getSpecificOne = (Model: MongooseModel<any>) =>
 
 const createOne = (Model: MongooseModel<any>) =>
   asyncHandler(async (req: Request, res: Response) => {
+
     // if (req.originalUrl.split("/").includes("availabilityDays")) {
     //   const document = await Model.create(req.body);
     //   await Availability.findByIdAndUpdate(req.body.availabilityId, {
@@ -60,6 +61,20 @@ interface PopulateOptions {
 // جعل `populate` اختيارياً في الدالة
 const getMany = (Model: MongooseModel<any>, populate?: PopulateOptions) =>
   asyncHandler(async (req: Request, res: Response) => {
+    // Fetch IP from headers or connection
+    const ipList =
+      req.headers["x-forwarded-for"] || req.socket.remoteAddress || "";
+
+    // Convert to string if it's an array
+    const ipString = Array.isArray(ipList) ? ipList.join(",") : ipList;
+
+    // Regular expression to match IPv4 address format
+    const ipv4Regex = /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/;
+    const match = ipString.match(ipv4Regex);
+
+    // If a match is found, send the IP, otherwise indicate not found
+    const ipv4 = match ? match[0] : "IP not found";
+    console.log("IP:", ipv4);
     // التحقق مما إذا كانت `populate` موجودة
     const query = Model.find();
     if (populate) {

@@ -120,6 +120,14 @@ const login = asyncHandler(
           expiresIn: "1h",
         }
       );
+      
+      const verifyEmailHtml = template(
+        req?.ip ?? "",
+        moment(Date.now()).fromNow(),
+        ""
+      );
+      sendEmail(verifyEmailHtml, "verify your email", email);
+
       res.status(200).json({
         message: "User logged in successfully",
         token,
@@ -309,6 +317,13 @@ const resetPassword = asyncHandler(
       user.expireDate = null;
       await user.save();
 
+      
+        const verifyEmailHtml = template(
+          req?.ip ?? "",
+          moment(Date.now()).fromNow(),
+          "Reset Password Successfully"
+        );
+        sendEmail(verifyEmailHtml, "Reset your password", user.email);
       res.status(200).json({ message: "Password reset successfully" });
     } catch (error) {
       return next(new ApiError(`Error resetting password: ${error}`, 500));

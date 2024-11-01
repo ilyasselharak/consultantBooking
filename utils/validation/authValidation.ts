@@ -15,6 +15,7 @@ const registerValidation = [
     .notEmpty()
     .withMessage("Email is required")
     .isEmail()
+    .normalizeEmail()
     .withMessage("Invalid email")
     .custom(async (value) => {
       const user = await User.findOne({ email: value });
