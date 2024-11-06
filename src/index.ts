@@ -60,7 +60,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 // })();
 
 // Connect to Redis
-// redisClient.connect();
+redisClient.connect();
 
 // Routes
 app.use("/api/v1/auth", authRoute);
